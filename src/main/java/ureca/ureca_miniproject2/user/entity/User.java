@@ -21,7 +21,7 @@ public class User {
     private String profile_image; // 이미지 경로
     private String name; // 이름
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UserUserRole> role = new ArrayList<>();
 
 
