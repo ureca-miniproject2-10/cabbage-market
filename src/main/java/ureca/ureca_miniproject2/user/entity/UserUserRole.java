@@ -2,9 +2,8 @@ package ureca.ureca_miniproject2.user.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
+import ureca.ureca_miniproject2.user.entity.key.UserRoleKey;
 
 @Entity
 @NoArgsConstructor

@@ -1,6 +1,4 @@
-package ureca.ureca_miniproject2.user.entity;
-
-import jakarta.persistence.Id;
+package ureca.ureca_miniproject2.user.entity.key;
 
 import java.io.Serializable;
 import java.util.Objects;

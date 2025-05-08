@@ -1,8 +1,23 @@
 package ureca.ureca_miniproject2.post.entity;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import ureca.ureca_miniproject2.user.entity.User;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer postId;
     private String title;
     private String content;
@@ -13,7 +28,14 @@ public class Post {
     private int reportCnt;
 
     private LocalDateTime createdAt;
+
+    @Enumerated(value=EnumType.STRING)
     private PostState state;
 
-    // FK 유저
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")
+    private User user;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    private List<Comment> comments = new ArrayList<>();
 }
