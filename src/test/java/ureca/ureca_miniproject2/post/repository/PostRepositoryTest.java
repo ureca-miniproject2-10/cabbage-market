@@ -32,7 +32,7 @@ class PostRepositoryTest {
         User user = User.builder()
                 .name("testUser")
                 .password("1234")
-                .role(Collections.emptyList())
+                .roles(Collections.emptyList())
                 .build();
 
         // TestEntityManager를 사용하여 User 엔티티 저장
@@ -64,7 +64,7 @@ class PostRepositoryTest {
         User user = User.builder()
                 .name("testUser")
                 .password("1234")
-                .role(Collections.emptyList())
+                .roles(Collections.emptyList())
                 .build();
 
         User savedUser = entityManager.persist(user);
@@ -100,7 +100,7 @@ class PostRepositoryTest {
         User user = User.builder()
                 .name("testUser")
                 .password("1234")
-                .role(Collections.emptyList())
+                .roles(Collections.emptyList())
                 .build();
 
         User savedUser = entityManager.persist(user);
@@ -146,7 +146,7 @@ class PostRepositoryTest {
         User user = User.builder()
                 .name("testUser")
                 .password("1234")
-                .role(Collections.emptyList())
+                .roles(Collections.emptyList())
                 .build();
 
         User savedUser = entityManager.persist(user);
