@@ -24,7 +24,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostResponse>> findPost(@PathVariable Integer postId) {
+    public ResponseEntity<ApiResponse<PostResponse>> findPost(@PathVariable("postId") Integer postId) {
         return ApiResponse.success(SuccessMessages.POST_FIND, postService.getPost(postId));
     }
 
@@ -35,13 +35,13 @@ public class PostController {
 
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
-            @PathVariable Integer postId,
+            @PathVariable("postId") Integer postId,
             @RequestBody PostUpdateRequest request) {
         return ApiResponse.success(SuccessMessages.POST_UPDATE, postService.updatePost(postId, request));
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Integer postId) {
+    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable("postId") Integer postId) {
         postService.deletePost(postId);
         return ApiResponse.success(SuccessMessages.POST_DELETE);
     }

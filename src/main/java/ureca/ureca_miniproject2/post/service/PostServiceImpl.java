@@ -2,6 +2,7 @@ package ureca.ureca_miniproject2.post.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
 import ureca.ureca_miniproject2.post.dto.PostResponse;
 import ureca.ureca_miniproject2.post.dto.PostUpdateRequest;
@@ -10,17 +11,16 @@ import ureca.ureca_miniproject2.post.entity.PostState;
 import ureca.ureca_miniproject2.post.repository.PostRepository;
 import ureca.ureca_miniproject2.user.entity.User;
 import ureca.ureca_miniproject2.user.repository.UserRepository;
-import ureca.ureca_miniproject2.util.exception.custom.UserNotFoundException;
-import ureca.ureca_miniproject2.util.response.FailureMessages;
+import ureca.ureca_miniproject2.util.exception.custom.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static ureca.ureca_miniproject2.util.response.FailureMessages.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -28,7 +28,7 @@ public class PostServiceImpl implements PostService{
     @Override
     public PostResponse createPost(PostCreateRequest request) {
         User user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND.getMessage()));
 
         Post post = Post.builder()
                 .title(request.title())
@@ -57,14 +57,14 @@ public class PostServiceImpl implements PostService{
     @Override
     public PostResponse getPost(Integer postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(POST_NOT_FOUND.getMessage()));
         return PostResponse.from(post);
     }
 
     @Override
     public PostResponse updatePost(Integer postId, PostUpdateRequest request) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(POST_NOT_FOUND.getMessage()));
 
         post.update(request.title(),
                 request.content(),
@@ -78,7 +78,7 @@ public class PostServiceImpl implements PostService{
     @Override
     public void deletePost(Integer postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND.getMessage()));
         postRepository.delete(post);
     }
 }
