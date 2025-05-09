@@ -36,4 +36,12 @@ public class Post {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
+
+    public void update(String title, String content, Integer price, String imageUrl, PostState state) {
+        this.title = title;
+        this.content = content;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.state = state;
+    }
 }
