@@ -32,12 +32,12 @@ public class ApiResponse<T> {
                         .data(data).build());
     }
 
-    public static <T> ResponseEntity<ApiResponse<T>> failure(FailureMessages failureMessages){
-        return ResponseEntity.status(failureMessages.getHttpStatus())
+    public static <T> ResponseEntity<ApiResponse<T>> fail(int status, String message) {
+        return ResponseEntity.status(status)
                 .body(ApiResponse.<T>builder()
-                        .status(failureMessages.getHttpStatus())
+                        .status(status)
                         .success(false)
-                        .message(failureMessages.getMessage())
+                        .message(message)
                         .build());
     }
 }
