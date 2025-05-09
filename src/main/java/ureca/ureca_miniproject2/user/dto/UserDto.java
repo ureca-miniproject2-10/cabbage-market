@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
+
+    // 비밀번호는 제외한 사용자 dto
     private Integer userId;
     private String username;
     private String name;
@@ -26,7 +28,7 @@ public class UserDto {
                 user.getUsername(),
                 user.getName(),
                 user.getProfile_image(),
-                user.getRole().stream()
+                user.getRoles().stream()
                         .map(userUserRole -> userUserRole.getUserRole().getRole())
                         .collect(Collectors.toList())
         );

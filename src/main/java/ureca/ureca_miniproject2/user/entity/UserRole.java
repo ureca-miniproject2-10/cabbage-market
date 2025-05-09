@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Getter
 public class UserRole {
 
@@ -25,5 +24,8 @@ public class UserRole {
     @OneToMany(mappedBy = "userRole", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UserUserRole> userRoles = new ArrayList<>();
 
+    public UserRole(String role) {
+        this.role = role;
+    }
 
 }
