@@ -2,10 +2,12 @@ package ureca.ureca_miniproject2.user.entity;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ureca.ureca_miniproject2.user.entity.key.UserRoleKey;
 
 @Entity
+@Getter
 @NoArgsConstructor
 @IdClass(UserRoleKey.class)
 public class UserUserRole {
