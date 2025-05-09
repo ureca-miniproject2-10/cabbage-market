@@ -1,0 +1,36 @@
+package ureca.ureca_miniproject2.post.dto;
+
+import ureca.ureca_miniproject2.post.entity.Post;
+import ureca.ureca_miniproject2.post.entity.PostState;
+
+import java.time.LocalDateTime;
+
+public record PostResponse(
+        Integer postId,
+        String title,
+        String content,
+        Integer price,
+        String imageUrl,
+        int likeCnt,
+        int viewCnt,
+        int reportCnt,
+        LocalDateTime createdAt,
+        PostState state,
+        String username
+) {
+    public static PostResponse from(Post post) {
+        return new PostResponse(
+                post.getPostId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getPrice(),
+                post.getImageUrl(),
+                post.getLikeCnt(),
+                post.getViewCnt(),
+                post.getReportCnt(),
+                post.getCreatedAt(),
+                post.getState(),
+                post.getUser().getName()
+        );
+    }
+}
