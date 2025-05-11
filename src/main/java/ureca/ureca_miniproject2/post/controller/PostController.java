@@ -9,7 +9,7 @@ import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
 import ureca.ureca_miniproject2.post.dto.PostResponse;
 import ureca.ureca_miniproject2.post.dto.PostUpdateRequest;
 import ureca.ureca_miniproject2.post.service.PostService;
-import ureca.ureca_miniproject2.util.gcs.GcsService;
+import ureca.ureca_miniproject2.util.image.ImageService;
 import ureca.ureca_miniproject2.util.response.ApiResponse;
 import ureca.ureca_miniproject2.util.response.SuccessMessages;
 
@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/api/posts")
 public class PostController {
     private final PostService postService;
-    private final GcsService gcsService;
+    private final ImageService imageService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<PostResponse>>> findAllPosts() {
@@ -47,8 +47,8 @@ public class PostController {
 
         // 이미지가 있으면 업로드하고 URL 설정
         if (image != null && !image.isEmpty()) {
-            String fileName = gcsService.uploadFile(image);
-            String imageUrl = gcsService.getFileUrl(fileName);
+            String fileName = imageService.uploadFile(image);
+            String imageUrl = imageService.getFileUrl(fileName);
 
             // request 객체에 이미지 URL 설정 (record 타입이므로 새로 생성)
             request = new PostCreateRequest(
