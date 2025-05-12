@@ -14,6 +14,7 @@ import ureca.ureca_miniproject2.user.entity.key.UserRoleKey;
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(UserRoleKey.class)
+@Table(name = "user_user_role")
 public class UserUserRole {
 
     @Id
