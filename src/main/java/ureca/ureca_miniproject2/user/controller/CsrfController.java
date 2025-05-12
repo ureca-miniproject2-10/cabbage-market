@@ -21,7 +21,7 @@ public class CsrfController {
 
     @GetMapping
     public ResponseEntity<Map<String, String>> getCsrfToken(HttpServletRequest request) {
-        // 세션 강제 생성 (중요)
+
         HttpSession session = request.getSession(true);
         System.out.println("세션 ID: " + session.getId());
 

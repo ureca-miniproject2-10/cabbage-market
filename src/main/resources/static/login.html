@@ -24,8 +24,7 @@
             <input type="password" id="password" name="password" class="form-control" required>
           </div>
 
-          <input type="hidden" name="_csrf" id="csrfToken">
-
+          <input type="hidden" name="_csrf" value="" id="_csrf">
           <button type="submit" class="btn btn-primary w-100">로그인</button>
 
           <div class="text-center mt-3">
@@ -38,17 +37,87 @@
 </div>
 
 <script>
-  // 쿠키에서 CSRF 토큰 가져오기
-  function getCsrfTokenFromCookie() {
-    const cookies = document.cookie.split(';');
-    for (const cookie of cookies) {
-      const [name, value] = cookie.trim().split('=');
-      if (name === 'XSRF-TOKEN') {
-        return decodeURIComponent(value);
+  /********/
+  //
+  //
+  // // 쿠키에서 CSRF 토큰 가져오기
+  // function getCsrfTokenFromCookie() {
+  //   const cookies = document.cookie.split(';');
+  //   for (const cookie of cookies) {
+  //     const [name, value] = cookie.trim().split('=');
+  //     if (name === 'XSRF-TOKEN') {
+  //       return decodeURIComponent(value);
+  //     }
+  //   }
+  //   return null;
+  // }
+
+  // 로그인 요청
+  // async function loginUser(username, password) {
+  //   try {
+  //     const csrfToken = getCsrfTokenFromCookie(); // 쿠키에서 CSRF 토큰 가져오기
+  //
+  //     const response = await fetch('/login', {
+  //       method: 'POST',
+  //       credentials: 'include',  // 쿠키 포함
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'X-XSRF-TOKEN': csrfToken
+  //       },
+  //       body: JSON.stringify({ username, password })
+  //     });
+  //
+  //     // 응답 코드가 401인 경우 처리
+  //     if (response.status === 401) {
+  //       alert("아이디 또는 비밀번호가 잘못되었습니다.");
+  //       return;
+  //     }
+  //
+  //     // 로그인 성공
+  //     if (response.ok) {
+  //       alert("로그인 성공");
+  //       window.location.href = "/index.html";
+  //     } else {
+  //       const errorData = await response.json().catch(() => ({}));
+  //       const message = errorData.message || "로그인 실패";
+  //       alert(message);
+  //     }
+  //   } catch (error) {
+  //     console.error("로그인 요청 실패", error);
+  //     alert("로그인 요청 실패: 서버와의 통신 중 문제가 발생했습니다.");
+  //   }
+  // }
+  //
+
+  /********/
+
+  // CSRF 토큰 가져오기
+  async function fetchCsrfToken() {
+    try {
+      const response = await fetch('/csrf-token', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const csrfToken = data.csrfToken;
+        console.log("CSRF 토큰을 성공적으로 가져왔습니다:", csrfToken);
+
+        // 폼의 hidden 필드에 CSRF 토큰 설정
+        document.getElementById('_csrf').value = csrfToken;
+      } else {
+        alert("CSRF 토큰을 가져오지 못했습니다.");
       }
+    } catch (error) {
+      console.error("CSRF 토큰 요청 실패:", error);
+      alert("CSRF 토큰 요청 실패: 서버와의 통신 중 문제가 발생했습니다.");
     }
-    return null;
   }
+
 
   // 로그인 요청
   async function loginUser(event) {
@@ -56,7 +125,7 @@
 
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
-    const csrfToken = getCsrfTokenFromCookie();
+    const csrfToken = document.getElementById('_csrf').value;
 
     if (!csrfToken) {
       alert("CSRF 토큰이 누락되었습니다. 페이지를 새로고침 해주세요.");
@@ -64,18 +133,24 @@
     }
 
     try {
+      const formData = new URLSearchParams();
+      formData.append("username", username);
+      formData.append("password", password);
+      formData.append("_csrf", csrfToken); // CSRF 토큰 포함
+
       const response = await fetch('/login', {
         method: 'POST',
         credentials: 'include',
         headers: {
-          'Content-Type': 'application/json',
-          'X-XSRF-TOKEN': csrfToken
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({ username, password })
+        body: formData.toString()
       });
 
+      console.log(response);
+
       if (response.ok) {
-        alert("로그인에 성공했습니다.");
+        alert("로그인에 성공했습니다");
         window.location.href = "/index.html";
       } else {
         const errorData = await response.json().catch(() => ({}));
@@ -89,8 +164,8 @@
   }
 
   // 폼 제출 이벤트 리스너 등록
-  document.addEventListener("DOMContentLoaded", () => {
-    fetchCsrfToken();
+  document.addEventListener("DOMContentLoaded", async () => {
+    await fetchCsrfToken(); // CSRF 토큰 먼저 로드
     const form = document.getElementById("loginForm");
     form.addEventListener("submit", loginUser);
   });
