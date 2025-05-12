@@ -26,8 +26,8 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<PostResponse>>> findAllPosts(
-            @RequestParam(defaultValue = "0") int pageNumber,
-            @RequestParam(defaultValue = "10") int pageSize
+            @RequestParam(name = "pageNumber" , defaultValue = "0") int pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize
     ) {
         Page<PostResponse> postPage = postService.getAllPosts(pageNumber, pageSize);
         List<PostResponse> postList = postPage.getContent();
