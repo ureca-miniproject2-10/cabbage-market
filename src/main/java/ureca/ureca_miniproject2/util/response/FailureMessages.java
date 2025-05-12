@@ -13,12 +13,19 @@ public enum FailureMessages {
 
     // 유저 관련 메시지
     USER_NOT_FOUND("유저가 존재하지 않습니다."),
+    UNAUTHORIZED("로그인이 필요한 기능입니다."),
 
     // 이미지 관련 메시지
     // 이미지 관련 메시지 추가
     IMAGE_SIZE_EXCEEDED("이미지 크기는 10MB를 초과할 수 없습니다."),
     INVALID_IMAGE_TYPE( "지원하지 않는 이미지 형식입니다. 지원 형식: JPEG, PNG, GIF, BMP, WEBP"),
-    EMPTY_FILE("파일이 비어있습니다.");
+    EMPTY_FILE("파일이 비어있습니다."),
+
+    // 댓글 관련 메시지
+    COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다."),
+    COMMENT_NO_AUTH("댓글을 수정, 삭제할 권한이 없습니다.");
+
+    // 권한 관련 메시지;
 
     private final String message;
 }

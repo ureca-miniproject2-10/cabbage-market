@@ -48,11 +48,12 @@ public class MyUserDetailService implements UserDetailsService {
         System.out.println("인증된 권한: " + authorities);
 
         // 사용자 정보 반환 (Spring 기본 User 대신 커스텀 UserDetails 사용)
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                authorities
-        );
+        return MyUserDetails.builder()
+                .userId(user.getUserId())  // 사용자 ID 추가
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .authorities(authorities)
+                .build();
     }
 }
 
