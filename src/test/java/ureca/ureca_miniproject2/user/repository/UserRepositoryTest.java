@@ -67,7 +67,7 @@ class UserRepositoryTest {
     @Test
     @DisplayName("사용자 조회 테스트")
     void testFindUserByUsername() {
-        User user = userRepository.findByUsername("lbk");
+        User user = userRepository.findByUsername("lbk").get();
         assertThat(user).isNotNull();
         assertThat(user.getUsername()).isEqualTo("lbk");
         assertThat(user.getName()).isEqualTo("이본규");
@@ -83,7 +83,7 @@ class UserRepositoryTest {
     @Test
     @DisplayName("사용자 삭제 테스트")
     void testDeleteUser() {
-        User user = userRepository.findByUsername("lbk");
+        User user = userRepository.findByUsername("lbk").get();
         userRepository.delete(user);
 
         List<User> users = userRepository.findAll();
