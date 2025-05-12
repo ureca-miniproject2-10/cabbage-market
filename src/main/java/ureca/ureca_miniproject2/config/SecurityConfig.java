@@ -50,10 +50,10 @@ public class SecurityConfig {
         http
                 // CSRF 토큰을 쿠키에 저장 , 클라이언트가 이를 요청에 포함하도록함
                 // ( 상태 변경 메서드 : POST, PUT, PATCH, DELETE 요청에 대해 항상 필요 )
-                .csrf(csrf->csrf.disable())
-//                .csrf(csrf -> csrf
-//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                )
+//                .csrf(csrf->csrf.disable())
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
                 .authenticationManager(authenticationManager)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)  // 항상 세션 생성
@@ -64,7 +64,7 @@ public class SecurityConfig {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(List.of("http://localhost:8080")); // 해당 url에서 오는 HTTP 요청을 허용
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-XSRF-TOKEN"));
+                    config.setAllowedHeaders(List.of("*"));
                     config.setExposedHeaders(List.of("X-XSRF-TOKEN"));
                     config.setAllowCredentials(true);
                     return config;
@@ -80,7 +80,7 @@ public class SecurityConfig {
                                 "/csrf-token",
                                         "/login",
                                 "/login.html",
-                                        "/auth/register",
+                                "/auth/**",
                                 "/register.html",
                                         "/error.html",
                                         "/api/posts/**",
@@ -92,20 +92,21 @@ public class SecurityConfig {
                                 .requestMatchers("/admin/**", "/admin.html").hasAuthority("ROLE_ADMIN")
                                 // 게시글 조회는 모든 유저 접근 허용
                                 .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
 
                                 // 게시글 등록, 수정, 삭제는 USER와 ADMIN만 허용
-                                .requestMatchers(HttpMethod.POST, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-                                .requestMatchers(HttpMethod.PUT, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER") // 작성자 검증 필요
-                                .requestMatchers(HttpMethod.DELETE, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER") // 작성자 검증 필요
+//                                .requestMatchers(HttpMethod.POST, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+//                                .requestMatchers(HttpMethod.PUT, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER") // 작성자 검증 필요
+//                                .requestMatchers(HttpMethod.DELETE, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER") // 작성자 검증 필요
                                 .anyRequest().authenticated()
 
                 )
                 // 접근 권한 예외 처리페이지 ( 인가되지 않은 사용자가 보호된 리소스에 접근할때 처리 )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.sendRedirect("/error.html");
-                        })
-                )
+//                .exceptionHandling(ex -> ex
+//                        .authenticationEntryPoint((request, response, authException) -> {
+//                            response.sendRedirect("/error.html");
+//                        })
+//                )
 
                 // 폼 로그인 설정
                 .formLogin(form -> form
