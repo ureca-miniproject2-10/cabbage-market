@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static ureca.ureca_miniproject2.util.response.FailureMessages.*;
 
@@ -82,5 +84,16 @@ public class ImageService {
 
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf("."));
+    }
+
+    public String extractFileNameFromUrl(String fileUrl) {
+        String regex = ".*/([^/?]+)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(fileUrl);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
     }
 }

@@ -63,15 +63,49 @@ public class PostController {
         return ApiResponse.success(SuccessMessages.POST_CREATE, postService.createPost(request));
     }
 
-    @PutMapping("/{postId}")
+    @PutMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
             @PathVariable("postId") Integer postId,
-            @RequestBody PostUpdateRequest request) {
-        return ApiResponse.success(SuccessMessages.POST_UPDATE, postService.updatePost(postId, request));
+            @RequestPart("request") PostUpdateRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+
+        String imageUrl = request.imageUrl();
+
+        if (image != null && !image.isEmpty()) {
+            //기존 이미지가 있으면 삭제
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                String fileName = imageService.extractFileNameFromUrl(imageUrl);
+                imageService.deleteFile(fileName);
+            }
+
+            //새로운 이미지 업로드
+            String newFileName = imageService.uploadFile(image);
+            imageUrl = imageService.getFileUrl(newFileName);
+        }
+
+        // PostUpdateRequest 객체 업데이트
+        PostUpdateRequest updatedRequest = new PostUpdateRequest(
+                request.title(),
+                request.content(),
+                request.price(),
+                imageUrl,
+                request.state()
+        );
+
+        return ApiResponse.success(SuccessMessages.POST_UPDATE, postService.updatePost(postId, updatedRequest));
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable("postId") Integer postId) {
+        PostResponse postResponse = postService.getPost(postId);
+        String imageUrl = postResponse.imageUrl();
+
+        //이미지가 존재하면 삭제
+        if(imageUrl != null && !imageUrl.isEmpty()){
+            String fileName = imageService.extractFileNameFromUrl(imageUrl);
+            imageService.deleteFile(fileName);
+        }
+
         postService.deletePost(postId);
         return ApiResponse.success(SuccessMessages.POST_DELETE);
     }
