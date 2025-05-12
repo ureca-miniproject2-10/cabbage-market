@@ -1,6 +1,8 @@
 package ureca.ureca_miniproject2.post.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
@@ -13,6 +15,7 @@ import ureca.ureca_miniproject2.user.entity.User;
 import ureca.ureca_miniproject2.user.repository.UserRepository;
 import ureca.ureca_miniproject2.util.exception.custom.NotFoundException;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -48,10 +51,14 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<PostResponse> getAllPosts() {
-        return postRepository.findAll().stream()
-                .map(PostResponse::from)
-                .toList();
+    public Page<PostResponse> getAllPosts(int pageNumber, int pageSize) {
+        // 페이지 번호는 0부터 시작
+        int correctedPageNumber = Math.max(0, pageNumber);
+
+        // Pageable 객체 생성
+        PageRequest pageable = PageRequest.of(correctedPageNumber, pageSize);
+        return postRepository.findAll(pageable)
+                .map(PostResponse::from);
     }
 
     @Override
