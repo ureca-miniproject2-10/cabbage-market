@@ -13,7 +13,6 @@ public enum SuccessMessages {
     POST_FIND_ALL(HttpStatus.OK.value(), "전체 게시글 조회에 성공했습니다."),
     POST_UPDATE(HttpStatus.OK.value(), "게시글 수정에 성공했습니다."),
     POST_DELETE(HttpStatus.OK.value(), "게시글 삭제에 성공했습니다.");
-
     private final int httpStatus;
     private final String message;
 }

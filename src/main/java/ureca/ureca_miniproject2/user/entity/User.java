@@ -41,8 +41,6 @@ public class User {
                 .build();
         this.roles.add(userUserRole);
     }
-
-
 }
 
 
