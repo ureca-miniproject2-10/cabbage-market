@@ -83,7 +83,8 @@ public class SecurityConfig {
                                         "/auth/register",
                                 "/register.html",
                                         "/error.html",
-                                        "/api/posts/**"
+                                        "/api/posts/**",
+                                        "/users/**"
 
                                 )
                         .permitAll()
