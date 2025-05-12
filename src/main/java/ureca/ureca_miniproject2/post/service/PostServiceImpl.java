@@ -63,7 +63,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public PostResponse getPost(Integer postId) {
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findByIdFetchComment(postId)
                 .orElseThrow(() -> new NotFoundException(POST_NOT_FOUND.getMessage()));
         return PostResponse.from(post);
     }
