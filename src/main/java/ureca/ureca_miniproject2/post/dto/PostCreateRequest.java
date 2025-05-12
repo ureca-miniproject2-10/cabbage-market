@@ -4,6 +4,5 @@ public record PostCreateRequest(
         String title,
         String content,
         Integer price,
-        String imageUrl,
-        Integer userId
+        String imageUrl
 ) {}

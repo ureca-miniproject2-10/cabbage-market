@@ -30,8 +30,8 @@ public class PostServiceImpl implements PostService{
     private final UserRepository userRepository;
 
     @Override
-    public PostDetailResponse createPost(PostCreateRequest request) {
-        User user = userRepository.findById(request.userId())
+    public PostDetailResponse createPost(PostCreateRequest request, Integer userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND.getMessage()));
 
         Post post = Post.builder()

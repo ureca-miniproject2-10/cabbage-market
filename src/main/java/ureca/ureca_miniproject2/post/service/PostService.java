@@ -12,7 +12,7 @@ import java.util.List;
 public interface PostService {
 
     // 게시글 등록
-    PostDetailResponse createPost(PostCreateRequest request);
+    PostDetailResponse createPost(PostCreateRequest request, Integer userId);
 
     // 게시글 전체조회
     Page<PostResponse> getAllPosts(int pageNumber, int pageSize);

@@ -1,6 +1,7 @@
 package ureca.ureca_miniproject2.post.dto;
 
 import ureca.ureca_miniproject2.comment.dto.CommentResponseDto;
+import ureca.ureca_miniproject2.comment.dto.UserSimpleDto;
 import ureca.ureca_miniproject2.post.entity.Post;
 import ureca.ureca_miniproject2.post.entity.PostState;
 
@@ -18,7 +19,7 @@ public record PostDetailResponse(
         int reportCnt,
         LocalDateTime createdAt,
         PostState state,
-        String name,
+        UserSimpleDto userSimpleDto,
         List<CommentResponseDto> comments
 ) {
     public static PostDetailResponse from(Post post) {
@@ -33,7 +34,7 @@ public record PostDetailResponse(
                 post.getReportCnt(),
                 post.getCreatedAt(),
                 post.getState(),
-                post.getUser().getName(),
+                UserSimpleDto.from(post.getUser()),
                 post.getComments().stream().map(CommentResponseDto::from).toList()
         );
     }
