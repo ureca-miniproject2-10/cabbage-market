@@ -25,13 +25,12 @@ public class PostController {
     private final ImageService imageService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostResponse>>> findAllPosts(
-            @RequestParam(name = "pageNumber" , defaultValue = "0") int pageNumber,
-            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize
+    public ResponseEntity<ApiResponse<Page<PostResponse>>> findAllPosts(
+            @RequestParam(name="pageNumber", defaultValue = "0") int pageNumber,
+            @RequestParam(name="pageSize",defaultValue = "10") int pageSize
     ) {
         Page<PostResponse> postPage = postService.getAllPosts(pageNumber, pageSize);
-        List<PostResponse> postList = postPage.getContent();
-        return ApiResponse.success(SuccessMessages.POST_FIND_ALL, postList);
+        return ApiResponse.success(SuccessMessages.POST_FIND_ALL, postPage);
     }
 
     @GetMapping("/{postId}")
