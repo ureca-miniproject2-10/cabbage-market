@@ -1,6 +1,7 @@
 package ureca.ureca_miniproject2.post.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
@@ -19,8 +20,13 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostResponse>>> findAllPosts() {
-        return ApiResponse.success(SuccessMessages.POST_FIND_ALL, postService.getAllPosts());
+    public ResponseEntity<ApiResponse<List<PostResponse>>> findAllPosts(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        Page<PostResponse> postPage = postService.getAllPosts(pageNumber, pageSize);
+        List<PostResponse> postList = postPage.getContent();
+        return ApiResponse.success(SuccessMessages.POST_FIND_ALL, postList);
     }
 
     @GetMapping("/{postId}")

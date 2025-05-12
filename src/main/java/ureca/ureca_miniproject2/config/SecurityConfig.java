@@ -82,7 +82,8 @@ public class SecurityConfig {
                                 "/login.html",
                                         "/auth/register",
                                 "/register.html",
-                                        "/error.html"
+                                        "/error.html",
+                                        "/api/posts/**"
 
                                 )
                         .permitAll()

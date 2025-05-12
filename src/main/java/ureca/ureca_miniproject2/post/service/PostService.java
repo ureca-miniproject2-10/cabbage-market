@@ -1,9 +1,11 @@
 package ureca.ureca_miniproject2.post.service;
 
+import org.springframework.data.domain.Page;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
 import ureca.ureca_miniproject2.post.dto.PostResponse;
 import ureca.ureca_miniproject2.post.dto.PostUpdateRequest;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 public interface PostService {
@@ -12,7 +14,7 @@ public interface PostService {
     PostResponse createPost(PostCreateRequest request);
 
     // 게시글 전체조회
-    List<PostResponse> getAllPosts();
+    Page<PostResponse> getAllPosts(int pageNumber, int pageSize);
 
     // 게시글 상세조회
     PostResponse getPost(Integer postId);
@@ -22,4 +24,6 @@ public interface PostService {
 
     // 게시글 삭제
     void deletePost(Integer postId);
+
+
 }
