@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
+import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
 import ureca.ureca_miniproject2.post.dto.PostResponse;
 import ureca.ureca_miniproject2.post.dto.PostUpdateRequest;
 import ureca.ureca_miniproject2.post.service.PostService;
@@ -34,19 +35,19 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostResponse>> findPost(@PathVariable("postId") Integer postId) {
+    public ResponseEntity<ApiResponse<PostDetailResponse>> findPost(@PathVariable("postId") Integer postId) {
         return ApiResponse.success(SuccessMessages.POST_FIND, postService.getPost(postId));
     }
 
     // 이미지가 없는 기존 JSON 만 받는 메서드
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<PostResponse>> createPost(@RequestBody PostCreateRequest request) {
+    public ResponseEntity<ApiResponse<PostDetailResponse>> createPost(@RequestBody PostCreateRequest request) {
         return ApiResponse.success(SuccessMessages.POST_CREATE, postService.createPost(request));
     }
 
     // 이미지와 함께 게시글 생성 (Multipart/form-data)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<PostResponse>> createPostWithImage(
+    public ResponseEntity<ApiResponse<PostDetailResponse>> createPostWithImage(
             @RequestPart("request") PostCreateRequest request,
             @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
 
@@ -69,7 +70,7 @@ public class PostController {
     }
 
     @PutMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<PostResponse>> updatePost(
+    public ResponseEntity<ApiResponse<PostDetailResponse>> updatePost(
             @PathVariable("postId") Integer postId,
             @RequestPart("request") PostUpdateRequest request,
             @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
@@ -102,7 +103,7 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable("postId") Integer postId) {
-        PostResponse postResponse = postService.getPost(postId);
+        PostDetailResponse postResponse = postService.getPost(postId);
         String imageUrl = postResponse.imageUrl();
 
         //이미지가 존재하면 삭제

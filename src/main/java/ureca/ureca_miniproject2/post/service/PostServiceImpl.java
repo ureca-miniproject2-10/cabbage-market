@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
+import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
 import ureca.ureca_miniproject2.post.dto.PostResponse;
 import ureca.ureca_miniproject2.post.dto.PostUpdateRequest;
 import ureca.ureca_miniproject2.post.entity.Post;
@@ -29,7 +30,7 @@ public class PostServiceImpl implements PostService{
     private final UserRepository userRepository;
 
     @Override
-    public PostResponse createPost(PostCreateRequest request) {
+    public PostDetailResponse createPost(PostCreateRequest request) {
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND.getMessage()));
 
@@ -47,7 +48,7 @@ public class PostServiceImpl implements PostService{
                 .build();
 
         Post savedPost = postRepository.save(post);
-        return PostResponse.from(savedPost);
+        return PostDetailResponse.from(savedPost);
     }
 
     @Override
@@ -62,14 +63,15 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public PostResponse getPost(Integer postId) {
+    public PostDetailResponse getPost(Integer postId) {
         Post post = postRepository.findByIdFetchComment(postId)
                 .orElseThrow(() -> new NotFoundException(POST_NOT_FOUND.getMessage()));
-        return PostResponse.from(post);
+
+        return PostDetailResponse.from(post);
     }
 
     @Override
-    public PostResponse updatePost(Integer postId, PostUpdateRequest request) {
+    public PostDetailResponse updatePost(Integer postId, PostUpdateRequest request) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(POST_NOT_FOUND.getMessage()));
 
@@ -79,7 +81,7 @@ public class PostServiceImpl implements PostService{
                 request.imageUrl(),
                 request.state());
 
-        return PostResponse.from(post);
+        return PostDetailResponse.from(post);
     }
 
     @Override

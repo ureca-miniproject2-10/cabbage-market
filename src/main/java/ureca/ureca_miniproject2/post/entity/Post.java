@@ -45,6 +45,4 @@ public class Post {
         this.imageUrl = imageUrl;
         this.state = state;
     }
-
-
 }
