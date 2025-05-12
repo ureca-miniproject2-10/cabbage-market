@@ -1,9 +1,11 @@
 package ureca.ureca_miniproject2.post.dto;
 
+import ureca.ureca_miniproject2.comment.dto.CommentResponseDto;
 import ureca.ureca_miniproject2.post.entity.Post;
 import ureca.ureca_miniproject2.post.entity.PostState;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record PostResponse(
         Integer postId,
@@ -16,7 +18,8 @@ public record PostResponse(
         int reportCnt,
         LocalDateTime createdAt,
         PostState state,
-        String username
+        String username,
+        List<CommentResponseDto> comments
 ) {
     public static PostResponse from(Post post) {
         return new PostResponse(
@@ -30,7 +33,8 @@ public record PostResponse(
                 post.getReportCnt(),
                 post.getCreatedAt(),
                 post.getState(),
-                post.getUser().getName()
+                post.getUser().getName(),
+                post.getComments().stream().map(CommentResponseDto::from).toList()
         );
     }
 }

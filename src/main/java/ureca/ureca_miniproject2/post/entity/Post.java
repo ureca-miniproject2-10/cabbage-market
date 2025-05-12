@@ -2,6 +2,7 @@ package ureca.ureca_miniproject2.post.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ureca.ureca_miniproject2.comment.entity.Comment;
 import ureca.ureca_miniproject2.user.entity.User;
 
 import java.time.LocalDateTime;
@@ -34,7 +35,7 @@ public class Post {
     @JoinColumn(name="user_id")
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     public void update(String title, String content, Integer price, String imageUrl, PostState state) {
@@ -44,4 +45,6 @@ public class Post {
         this.imageUrl = imageUrl;
         this.state = state;
     }
+
+
 }
