@@ -5,6 +5,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+*.log
+
 ### STS ###
 .apt_generated
 .classpath
@@ -35,3 +37,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### GCP Key ###
+civil-tempo-459307-f4-4a80bdaa20c8.json
+*.json
+
+### 환경변수 파일 ###
+.env

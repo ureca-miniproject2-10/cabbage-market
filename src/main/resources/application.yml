@@ -1,6 +1,8 @@
 spring:
   application:
     name: ureca_miniproject2
+  config:
+    import: optional:file:.env[.properties]
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/ureca_miniproject2
@@ -15,6 +17,18 @@ spring:
         format_sql: true
     open-in-view: false
 
+  cloud:
+    gcp:
+      storage:
+        credentials:
+          location: ${GCP_CREDENTIALS_LOCATION}
+        project-id: ${GCP_PROJECT_ID}
+        bucket: ${GCP_BUCKET_NAME}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 logging:
   level:
     org.springframework.security: debug
