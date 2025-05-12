@@ -44,4 +44,13 @@ public class Post {
         this.imageUrl = imageUrl;
         this.state = state;
     }
+
+    public void incrementLike() {
+        this.likeCnt++;
+    }
+
+    public void decrementLike() {
+        this.likeCnt--;
+    }
+
 }

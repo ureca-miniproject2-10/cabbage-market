@@ -50,10 +50,10 @@ public class SecurityConfig {
         http
                 // CSRF 토큰을 쿠키에 저장 , 클라이언트가 이를 요청에 포함하도록함
                 // ( 상태 변경 메서드 : POST, PUT, PATCH, DELETE 요청에 대해 항상 필요 )
-//                .csrf(csrf->csrf.disable())
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                )
+                .csrf(csrf->csrf.disable())
+//                .csrf(csrf -> csrf
+//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                )
                 .authenticationManager(authenticationManager)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)  // 항상 세션 생성
@@ -84,7 +84,8 @@ public class SecurityConfig {
                                 "/register.html",
                                         "/error.html",
                                         "/api/posts/**",
-                                        "/users/**"
+                                        "/users/**",
+                                        "/api/likes/**"
 
                                 )
                         .permitAll()
@@ -93,6 +94,9 @@ public class SecurityConfig {
                                 // 게시글 조회는 모든 유저 접근 허용
                                 .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
+
+                                // 좋아요
+                                .requestMatchers(HttpMethod.GET, "/api/likes/**").permitAll()
 
                                 // 게시글 등록, 수정, 삭제는 USER와 ADMIN만 허용
 //                                .requestMatchers(HttpMethod.POST, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
