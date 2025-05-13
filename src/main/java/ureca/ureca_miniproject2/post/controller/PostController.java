@@ -142,4 +142,15 @@ public class PostController {
     }
 
 
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<Page<PostResponse>>> searchPosts(
+            @RequestParam("keyword") String keyword,
+            @RequestParam(name="pageNumber", defaultValue = "0") int pageNumber,
+            @RequestParam(name="pageSize", defaultValue = "10") int pageSize
+    ) {
+        Page<PostResponse> postPage = postService.searchPostsByTitle(keyword, pageNumber, pageSize);
+        return ApiResponse.success(SuccessMessages.POST_FIND_ALL, postPage);
+    }
+
+
 }

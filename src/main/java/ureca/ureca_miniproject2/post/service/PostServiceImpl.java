@@ -129,4 +129,16 @@ public class PostServiceImpl implements PostService{
     }
 
 
+    // 제목으로 게시글 검색
+    @Override
+    public Page<PostResponse> searchPostsByTitle(String keyword, int pageNumber, int pageSize) {
+        int correctedPageNumber = Math.max(0, pageNumber);
+        PageRequest pageable = PageRequest.of(correctedPageNumber, pageSize);
+
+        return postRepository.findByTitleContainingIgnoreCase(keyword, pageable)
+                .map(PostResponse::from);
+    }
+
+
+
 }
