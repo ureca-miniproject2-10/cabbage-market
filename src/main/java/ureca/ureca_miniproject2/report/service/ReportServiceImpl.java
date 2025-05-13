@@ -2,16 +2,29 @@ package ureca.ureca_miniproject2.report.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ureca.ureca_miniproject2.post.entity.Apology;
+import ureca.ureca_miniproject2.post.entity.ApologyState;
 import ureca.ureca_miniproject2.post.entity.Post;
 import ureca.ureca_miniproject2.post.entity.Report;
 import ureca.ureca_miniproject2.post.entity.key.ReportKey;
 import ureca.ureca_miniproject2.post.repository.PostRepository;
+import ureca.ureca_miniproject2.report.repository.ApologyRepository;
 import ureca.ureca_miniproject2.report.repository.ReportRepository;
 import ureca.ureca_miniproject2.user.entity.User;
 import ureca.ureca_miniproject2.user.repository.UserRepository;
+import ureca.ureca_miniproject2.util.exception.custom.ForbiddenException;
 import ureca.ureca_miniproject2.util.exception.custom.IsAlreadyException;
+import ureca.ureca_miniproject2.util.exception.custom.NotFoundException;
 import ureca.ureca_miniproject2.util.response.FailureMessages;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static ureca.ureca_miniproject2.util.response.FailureMessages.*;
 
 @Service
 @Transactional
@@ -21,6 +34,7 @@ public class ReportServiceImpl implements ReportService{
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final ApologyRepository apologyRepository;
 
     @Override
     public boolean hasReported(Integer userId, Integer postId) {
@@ -32,18 +46,21 @@ public class ReportServiceImpl implements ReportService{
         if (!hasReported(userId, postId)) {
             // User와 Post 엔티티 조회
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
+                    .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND.getMessage()));
 
             Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 게시글입니다."));
+                    .orElseThrow(() -> new NotFoundException(POST_NOT_FOUND.getMessage()));
 
             // 연관된 엔티티를 포함하여 Report 생성
             Report report = new Report(user, post, content);
             reportRepository.save(report);
             post.incrementReport();
+
+            if(post.shouldBeRestricted()) post.restrict();
+
             postRepository.save(post);
         } else {
-            throw new IsAlreadyException(FailureMessages.REPORT_DUPLICATED.getMessage());
+            throw new IsAlreadyException(REPORT_DUPLICATED.getMessage());
         }
     }
 

@@ -27,7 +27,9 @@ public enum FailureMessages {
     COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다."),
     COMMENT_NO_AUTH("댓글을 수정, 삭제할 권한이 없습니다."),
 
-    // 권한 관련 메시지;
+    // 반성문 관련 메시지
+    APOLOGY_NOT_FOUND("반성문을 찾을 수 없습니다."),
+    APOLOGY_FORBIDDEN("게시글 작성자만 반성문을 제출할 수 있습니다."),
 
     // 신고 관련 메시지
     REPORT_DUPLICATED("이미 신고한 게시글입니다.");
