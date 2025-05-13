@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ureca.ureca_miniproject2.config.MyUserDetails;
 import ureca.ureca_miniproject2.like.service.LikeService;
 import ureca.ureca_miniproject2.util.exception.custom.UnAuthorizedException;
+import ureca.ureca_miniproject2.util.response.ApiResponse;
+import ureca.ureca_miniproject2.util.response.SuccessMessages;
 
 import static ureca.ureca_miniproject2.util.response.FailureMessages.UNAUTHORIZED;
 
@@ -20,7 +22,7 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping("/{postId}")
-    public ResponseEntity<String> toggleLike(
+    public ResponseEntity<ApiResponse<String>> toggleLike(
             @PathVariable("postId") Integer postId,
             @AuthenticationPrincipal MyUserDetails userDetails) {
 
@@ -31,7 +33,7 @@ public class LikeController {
         Integer currentUserId = userDetails.getUserId();
 
         likeService.toggleLike(currentUserId,postId);
-        return ResponseEntity.ok("좋아요 상태가 변경되었습니다.");
+        return ApiResponse.success(SuccessMessages.LIKE_TOGGLE);
     }
 
 }

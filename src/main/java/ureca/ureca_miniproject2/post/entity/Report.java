@@ -28,4 +28,13 @@ public class Report {
     @MapsId("postId")
     @JoinColumn(name="post_id")
     private Post post;
+
+    public Report(User user, Post post, String content) {
+        this.user = user;
+        this.post = post;
+        this.userId = user.getUserId();
+        this.postId = post.getPostId();
+        this.content = content;
+        this.createdAt = LocalDateTime.now();
+    }
 }

@@ -25,9 +25,12 @@ public enum FailureMessages {
 
     // 댓글 관련 메시지
     COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다."),
-    COMMENT_NO_AUTH("댓글을 수정, 삭제할 권한이 없습니다.");
+    COMMENT_NO_AUTH("댓글을 수정, 삭제할 권한이 없습니다."),
 
     // 권한 관련 메시지;
+
+    // 신고 관련 메시지
+    REPORT_DUPLICATED("이미 신고한 게시글입니다.");
 
     private final String message;
 }
