@@ -10,6 +10,8 @@ public enum FailureMessages {
     // 게시글 관련 메시지
     POST_CREATE("게시글 등록에 실패하였습니다."),
     POST_NOT_FOUND("게시글이 존재하지 않습니다."),
+    POST_FORBIDDEN("게시글을 수정, 삭제는 작성자만 가능합니다."),
+
 
     // 유저 관련 메시지
     USER_NOT_FOUND("유저가 존재하지 않습니다."),

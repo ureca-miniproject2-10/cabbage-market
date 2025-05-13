@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
+import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
 import ureca.ureca_miniproject2.post.dto.PostResponse;
 import ureca.ureca_miniproject2.post.dto.PostUpdateRequest;
 import ureca.ureca_miniproject2.post.entity.Post;
@@ -50,8 +51,7 @@ class PostServiceImplTest {
                 "Test Title",
                 "Test Content",
                 10000,
-                "test.jpg",
-                testUser.getUserId()
+                "test.jpg"
         );
     }
 
@@ -59,7 +59,7 @@ class PostServiceImplTest {
     @DisplayName("게시글 생성 통합 테스트")
     void createPostIntegrationTest() {
         // when
-        PostResponse response = postService.createPost(createRequest);
+        PostDetailResponse response = postService.createPost(createRequest, testUser.getUserId());
 
         // then
         assertThat(response).isNotNull();
@@ -76,7 +76,7 @@ class PostServiceImplTest {
     @DisplayName("게시글 수정 통합 테스트")
     void updatePostIntegrationTest() {
         // given
-        PostResponse created = postService.createPost(createRequest);
+        PostDetailResponse created = postService.createPost(createRequest, testUser.getUserId());
 
         PostUpdateRequest updateRequest = new PostUpdateRequest(
                 "Updated Title",
@@ -87,7 +87,7 @@ class PostServiceImplTest {
         );
 
         // when
-        PostResponse updated = postService.updatePost(created.postId(), updateRequest);
+        PostDetailResponse updated = postService.updatePost(created.postId(), updateRequest);
 
         // then
         assertThat(updated.title()).isEqualTo("Updated Title");
@@ -99,7 +99,7 @@ class PostServiceImplTest {
     @DisplayName("게시글 삭제 통합 테스트")
     void deletePostIntegrationTest() {
         // given
-        PostResponse created = postService.createPost(createRequest);
+        PostDetailResponse created = postService.createPost(createRequest, testUser.getUserId());
         Integer postId = created.postId();
 
         // when
