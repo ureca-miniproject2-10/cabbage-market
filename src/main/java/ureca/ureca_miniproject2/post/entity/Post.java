@@ -57,8 +57,23 @@ public class Post {
 
     public void incrementReport() {this.reportCnt++;}
 
+    public void restrict() {
+        this.state = PostState.RESTRICT;
+    }
+
+    public void unrestrict() {
+        this.state = PostState.SALE;
+    }
+
+    public boolean isRestricted() {
+        return this.state == PostState.RESTRICT;
+    }
+
+    public boolean shouldBeRestricted() {
+        return this.reportCnt >= 5;
+    }
+
     public void incrementView() {
         this.viewCnt++;
     }
-
 }

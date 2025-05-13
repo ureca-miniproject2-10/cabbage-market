@@ -107,6 +107,10 @@ public class SecurityConfig {
 //                                .requestMatchers(HttpMethod.POST, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
 //                                .requestMatchers(HttpMethod.PUT, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER") // 작성자 검증 필요
 //                                .requestMatchers(HttpMethod.DELETE, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER") // 작성자 검증 필요
+
+                                // 관리자 전용 페이지 및 API
+                                .requestMatchers("/admin/**", "/admin.html", "/api/admin/**").hasAuthority("ROLE_ADMIN")
+
                                 .anyRequest().authenticated()
 
                 )

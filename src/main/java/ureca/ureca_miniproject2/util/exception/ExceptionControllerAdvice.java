@@ -25,6 +25,11 @@ public class ExceptionControllerAdvice {
         return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<?> handleIllegalStateException(IllegalStateException e) {
+        return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
+
     @ExceptionHandler(UnAuthorizedException.class)
     public ResponseEntity<?> handleUnAuthorizedException(UnAuthorizedException e) {
         return ApiResponse.fail(HttpStatus.UNAUTHORIZED.value(), e.getMessage());

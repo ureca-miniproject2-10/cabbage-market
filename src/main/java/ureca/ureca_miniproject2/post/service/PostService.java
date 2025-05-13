@@ -6,6 +6,8 @@ import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
 import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
 import ureca.ureca_miniproject2.post.dto.PostResponse;
 import ureca.ureca_miniproject2.post.dto.PostUpdateRequest;
+import ureca.ureca_miniproject2.post.entity.Post;
+import ureca.ureca_miniproject2.post.entity.PostState;
 
 import java.awt.print.Pageable;
 import java.util.List;
@@ -27,6 +29,8 @@ public interface PostService {
     // 게시글 삭제
     void deletePost(Integer postId);
 
+    // restrict 게시글 조회
+    List<PostResponse> findRestrictedPost();
     // Ip 기반 조회수 증가
     void increaseViewCount(Integer postId, HttpServletRequest request);
 

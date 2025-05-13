@@ -141,4 +141,11 @@ public class PostServiceImpl implements PostService{
 
 
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostResponse> findRestrictedPost() {
+        List<Post> posts = postRepository.findByState(PostState.RESTRICT);
+        return posts.stream().map(PostResponse::from).toList();
+    }
 }
