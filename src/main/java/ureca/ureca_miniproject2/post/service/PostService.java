@@ -31,4 +31,6 @@ public interface PostService {
     void increaseViewCount(Integer postId, HttpServletRequest request);
 
 
+    // 키워드로 게시글 검색
+    Page<PostResponse> searchPostsByTitle(String keyword, int pageNumber, int pageSize);
 }
