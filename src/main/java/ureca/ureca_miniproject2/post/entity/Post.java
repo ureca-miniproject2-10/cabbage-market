@@ -72,4 +72,8 @@ public class Post {
     public boolean shouldBeRestricted() {
         return this.reportCnt >= 5;
     }
+
+    public void incrementView() {
+        this.viewCnt++;
+    }
 }

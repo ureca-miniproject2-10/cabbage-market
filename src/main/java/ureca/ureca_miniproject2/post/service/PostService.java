@@ -1,5 +1,6 @@
 package ureca.ureca_miniproject2.post.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
 import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
@@ -30,4 +31,10 @@ public interface PostService {
 
     // restrict 게시글 조회
     List<PostResponse> findRestrictedPost();
+    // Ip 기반 조회수 증가
+    void increaseViewCount(Integer postId, HttpServletRequest request);
+
+
+    // 키워드로 게시글 검색
+    Page<PostResponse> searchPostsByTitle(String keyword, int pageNumber, int pageSize);
 }

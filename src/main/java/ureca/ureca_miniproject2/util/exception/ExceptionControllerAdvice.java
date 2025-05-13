@@ -45,4 +45,9 @@ public class ExceptionControllerAdvice {
         return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 
+    @ExceptionHandler(DuplicatedViewException.class)
+    public ResponseEntity<?> handleDuplicatedViewException(DuplicatedViewException e) {
+        return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
+
 }
