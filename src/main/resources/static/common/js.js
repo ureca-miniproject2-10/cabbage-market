@@ -39,3 +39,4 @@ function clearCsrfToken() {
     cachedCsrfToken = null;
     console.log("CSRF 토큰 캐시 초기화");
 }
+

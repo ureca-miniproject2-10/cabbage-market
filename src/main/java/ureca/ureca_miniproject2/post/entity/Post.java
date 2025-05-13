@@ -57,4 +57,8 @@ public class Post {
 
     public void incrementReport() {this.reportCnt++;}
 
+    public void incrementView() {
+        this.viewCnt++;
+    }
+
 }

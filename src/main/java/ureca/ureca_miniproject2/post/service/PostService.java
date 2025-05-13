@@ -1,5 +1,6 @@
 package ureca.ureca_miniproject2.post.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
 import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
@@ -25,6 +26,9 @@ public interface PostService {
 
     // 게시글 삭제
     void deletePost(Integer postId);
+
+    // Ip 기반 조회수 증가
+    void increaseViewCount(Integer postId, HttpServletRequest request);
 
 
 }

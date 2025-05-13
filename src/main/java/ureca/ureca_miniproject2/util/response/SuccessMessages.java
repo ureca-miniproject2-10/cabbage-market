@@ -13,6 +13,7 @@ public enum SuccessMessages {
     POST_FIND_ALL(HttpStatus.OK.value(), "전체 게시글 조회에 성공했습니다."),
     POST_UPDATE(HttpStatus.OK.value(), "게시글 수정에 성공했습니다."),
     POST_DELETE(HttpStatus.OK.value(), "게시글 삭제에 성공했습니다."),
+    POST_VIEW(HttpStatus.OK.value(), "조회수 증가 성공"),
 
     // 댓글 관련 메시지
     COMMENT_CREATE(HttpStatus.CREATED.value(),"댓글이 성공적으로 생성되었습니다." ),
@@ -29,6 +30,8 @@ public enum SuccessMessages {
 
     // 신고하기 메시지
     REPORT_OK(HttpStatus.OK.value(), "신고 완료되었습니다.");
+
+
 
 
     private final int httpStatus;

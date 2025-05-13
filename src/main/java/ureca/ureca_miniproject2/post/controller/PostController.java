@@ -1,7 +1,9 @@
 package ureca.ureca_miniproject2.post.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +23,7 @@ import ureca.ureca_miniproject2.util.response.SuccessMessages;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static ureca.ureca_miniproject2.util.response.FailureMessages.*;
 
@@ -131,4 +134,12 @@ public class PostController {
     private boolean isPostAuthor(PostDetailResponse post, Integer userId) {
         return post.userSimpleDto().userId().equals(userId);
     }
+
+    @PostMapping("/{postId}/view")
+    public ResponseEntity<ApiResponse<Void>> increaseView(@PathVariable("postId") Integer postId, HttpServletRequest request) {
+            postService.increaseViewCount(postId, request);
+            return ApiResponse.success(SuccessMessages.POST_VIEW);
+    }
+
+
 }

@@ -50,10 +50,10 @@ public class SecurityConfig {
         http
                 // CSRF 토큰을 쿠키에 저장 , 클라이언트가 이를 요청에 포함하도록함
                 // ( 상태 변경 메서드 : POST, PUT, PATCH, DELETE 요청에 대해 항상 필요 )
-                .csrf(csrf->csrf.disable())
-//                .csrf(csrf -> csrf
-//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                )
+//                .csrf(csrf->csrf.disable())
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
                 .authenticationManager(authenticationManager)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)  // 항상 세션 생성
@@ -87,7 +87,8 @@ public class SecurityConfig {
                                         "/api/posts/**",
                                         "/users/**",
                                         "/api/likes/**",
-                                        "/api/reports/**"
+                                        "/api/reports/**",
+                                        "api/posts/**/view" // 조회수 증가
 
                                 )
                         .permitAll()
