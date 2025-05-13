@@ -54,7 +54,7 @@ public class SecurityConfig {
 //                .csrf(csrf -> csrf
 //                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                )
-//                .authenticationManager(authenticationManager)
+                .authenticationManager(authenticationManager)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)  // 항상 세션 생성
                         .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::migrateSession)  // 세션 고정 보호
@@ -84,7 +84,8 @@ public class SecurityConfig {
                                 "/register.html",
                                         "/error.html",
                                         "/api/posts/**",
-                                        "/users/**"
+                                        "/users/**",
+                                        "/api/likes/**"
 
                                 )
                         .permitAll()
@@ -93,6 +94,9 @@ public class SecurityConfig {
                                 // 게시글 조회는 모든 유저 접근 허용
                                 .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
+
+                                // 좋아요
+                                .requestMatchers(HttpMethod.GET, "/api/likes/**").permitAll()
 
                                 // 게시글 등록, 수정, 삭제는 USER와 ADMIN만 허용
 //                                .requestMatchers(HttpMethod.POST, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
