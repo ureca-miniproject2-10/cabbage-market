@@ -3,13 +3,12 @@ package ureca.ureca_miniproject2.post.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ureca.ureca_miniproject2.config.MyUserDetails;
+import ureca.ureca_miniproject2.config.userdetails.MyUserDetails;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
 import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
 import ureca.ureca_miniproject2.post.dto.PostResponse;
@@ -18,12 +17,9 @@ import ureca.ureca_miniproject2.post.service.PostService;
 import ureca.ureca_miniproject2.util.exception.custom.ForbiddenException;
 import ureca.ureca_miniproject2.util.image.ImageService;
 import ureca.ureca_miniproject2.util.response.ApiResponse;
-import ureca.ureca_miniproject2.util.response.FailureMessages;
 import ureca.ureca_miniproject2.util.response.SuccessMessages;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import static ureca.ureca_miniproject2.util.response.FailureMessages.*;
 

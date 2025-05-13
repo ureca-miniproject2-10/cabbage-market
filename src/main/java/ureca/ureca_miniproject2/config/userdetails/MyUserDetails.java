@@ -1,4 +1,4 @@
-package ureca.ureca_miniproject2.config;
+package ureca.ureca_miniproject2.config.userdetails;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

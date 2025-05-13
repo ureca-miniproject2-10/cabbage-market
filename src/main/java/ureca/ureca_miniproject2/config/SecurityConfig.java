@@ -1,17 +1,13 @@
 package ureca.ureca_miniproject2.config;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,11 +16,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
+import ureca.ureca_miniproject2.config.handler.CustomAccessDeniedHandler;
+import ureca.ureca_miniproject2.config.handler.MyAuthenticationFailureHandler;
+import ureca.ureca_miniproject2.config.handler.MyAuthenticationSuccessHandler;
 
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -45,15 +45,16 @@ public class SecurityConfig {
             HttpSecurity http,
             AuthenticationManager authenticationManager,
             MyAuthenticationSuccessHandler successHandler,
-            MyAuthenticationFailureHandler failureHandler
+            MyAuthenticationFailureHandler failureHandler,
+            CustomAccessDeniedHandler accessDeniedHandler
     ) throws Exception {
         http
                 // CSRF 토큰을 쿠키에 저장 , 클라이언트가 이를 요청에 포함하도록함
                 // ( 상태 변경 메서드 : POST, PUT, PATCH, DELETE 요청에 대해 항상 필요 )
-//                .csrf(csrf->csrf.disable())
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                )
+                .csrf(csrf->csrf.disable())
+//                .csrf(csrf -> csrf
+//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                )
                 .authenticationManager(authenticationManager)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)  // 항상 세션 생성
@@ -114,12 +115,13 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
 
                 )
-                // 접근 권한 예외 처리페이지 ( 인가되지 않은 사용자가 보호된 리소스에 접근할때 처리 )
-//                .exceptionHandling(ex -> ex
+//                 접근 권한 예외 처리페이지 ( 인가되지 않은 사용자가 보호된 리소스에 접근할때 처리 )
+                .exceptionHandling(ex -> ex
 //                        .authenticationEntryPoint((request, response, authException) -> {
 //                            response.sendRedirect("/error.html");
 //                        })
-//                )
+                                .accessDeniedHandler(accessDeniedHandler)
+                )
 
                 // 폼 로그인 설정
                 .formLogin(form -> form
