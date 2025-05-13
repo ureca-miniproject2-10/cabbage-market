@@ -17,7 +17,13 @@ public enum SuccessMessages {
     // 댓글 관련 메시지
     COMMENT_CREATE(HttpStatus.CREATED.value(),"댓글이 성공적으로 생성되었습니다." ),
     COMMENT_UPDATE(HttpStatus.OK.value(), "댓글 수정에 성공했습니다."),
-    COMMENT_DELETE(HttpStatus.OK.value(), "댓글 삭제에 성공했습니다.");
+    COMMENT_DELETE(HttpStatus.OK.value(), "댓글 삭제에 성공했습니다."),
+
+    // 마이페이지 관련 메시지
+    USER_MYPAGE_FIND(HttpStatus.OK.value(), "마이페이지 조회 성공"),
+    USER_PROFILE_UPDATE(HttpStatus.OK.value(), "이름 변경 성공"),
+    USER_PROFILE_IMAGE_UPDATE(HttpStatus.OK.value(), "프로필 이미지 변경 성공" );
+
     private final int httpStatus;
     private final String message;
 }

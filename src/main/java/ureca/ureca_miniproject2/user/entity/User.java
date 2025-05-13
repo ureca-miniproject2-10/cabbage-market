@@ -41,6 +41,14 @@ public class User {
                 .build();
         this.roles.add(userUserRole);
     }
+
+    public void updateName(String name) {
+        this.name=name;
+    }
+
+    public void updateProfileImageUrl(String newImageUrl) {
+        this.profile_image=newImageUrl;
+    }
 }
 
 

@@ -36,6 +36,7 @@ public class Post {
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
     public void update(String title, String content, Integer price, String imageUrl, PostState state) {
