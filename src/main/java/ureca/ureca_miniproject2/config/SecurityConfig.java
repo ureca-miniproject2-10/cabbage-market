@@ -88,7 +88,9 @@ public class SecurityConfig {
                                         "/users/**",
                                         "/api/likes/**",
                                         "/api/reports/**",
-                                        "api/posts/**/view" // 조회수 증가
+                                        "/api/posts/*/view", // 조회수 증가
+                                        "/posts.html", // 게시글 페이지
+                                        "/images/**" // 디폴트 이미지
 
                                 )
                         .permitAll()

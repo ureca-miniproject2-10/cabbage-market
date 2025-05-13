@@ -18,7 +18,7 @@ public class CacheConfig {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager("postViews");
         cacheManager.setCaffeine(
                 Caffeine.newBuilder()
-                        .expireAfterWrite(30, TimeUnit.SECONDS)  // 30초 TTL
+                        .expireAfterWrite(30, TimeUnit.SECONDS)  // 30초 TTL ( 30초마다 만료되도록 )
                         .maximumSize(10000)  // 최대 10,000개의 캐시 항목
         );
         return cacheManager;
