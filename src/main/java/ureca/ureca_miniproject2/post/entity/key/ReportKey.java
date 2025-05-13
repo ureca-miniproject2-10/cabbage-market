@@ -9,6 +9,16 @@ public class ReportKey implements Serializable {
 
     private Integer postId;
 
+
+    public ReportKey() {
+    }
+
+    public ReportKey(Integer userId, Integer postId) {
+        this.userId = userId;
+        this.postId = postId;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

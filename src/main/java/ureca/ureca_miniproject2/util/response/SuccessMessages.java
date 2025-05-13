@@ -17,7 +17,14 @@ public enum SuccessMessages {
     // 댓글 관련 메시지
     COMMENT_CREATE(HttpStatus.CREATED.value(),"댓글이 성공적으로 생성되었습니다." ),
     COMMENT_UPDATE(HttpStatus.OK.value(), "댓글 수정에 성공했습니다."),
-    COMMENT_DELETE(HttpStatus.OK.value(), "댓글 삭제에 성공했습니다.");
+    COMMENT_DELETE(HttpStatus.OK.value(), "댓글 삭제에 성공했습니다."),
+
+    // 좋아요 메시지
+    LIKE_TOGGLE(HttpStatus.OK.value(), "좋아요 상태가 변경되었습니다."),
+
+    // 신고하기 메시지
+    REPORT_OK(HttpStatus.OK.value(), "신고 완료되었습니다.");
+
     private final int httpStatus;
     private final String message;
 }
