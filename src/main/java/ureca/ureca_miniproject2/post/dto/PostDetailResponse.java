@@ -1,15 +1,17 @@
 package ureca.ureca_miniproject2.post.dto;
 
 import ureca.ureca_miniproject2.comment.dto.CommentResponseDto;
+import ureca.ureca_miniproject2.comment.dto.UserSimpleDto;
 import ureca.ureca_miniproject2.post.entity.Post;
 import ureca.ureca_miniproject2.post.entity.PostState;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record PostResponse(
+public record PostDetailResponse(
         Integer postId,
         String title,
+        String content,
         Integer price,
         String imageUrl,
         int likeCnt,
@@ -17,12 +19,14 @@ public record PostResponse(
         int reportCnt,
         LocalDateTime createdAt,
         PostState state,
-        String name
+        UserSimpleDto userSimpleDto,
+        List<CommentResponseDto> comments
 ) {
-    public static PostResponse from(Post post) {
-        return new PostResponse(
+    public static PostDetailResponse from(Post post) {
+        return new PostDetailResponse(
                 post.getPostId(),
                 post.getTitle(),
+                post.getContent(),
                 post.getPrice(),
                 post.getImageUrl(),
                 post.getLikeCnt(),
@@ -30,7 +34,8 @@ public record PostResponse(
                 post.getReportCnt(),
                 post.getCreatedAt(),
                 post.getState(),
-                post.getUser().getName()
+                UserSimpleDto.from(post.getUser()),
+                post.getComments().stream().map(CommentResponseDto::from).toList()
         );
     }
 }

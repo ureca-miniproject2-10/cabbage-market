@@ -2,6 +2,7 @@ package ureca.ureca_miniproject2.post.service;
 
 import org.springframework.data.domain.Page;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
+import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
 import ureca.ureca_miniproject2.post.dto.PostResponse;
 import ureca.ureca_miniproject2.post.dto.PostUpdateRequest;
 
@@ -11,16 +12,16 @@ import java.util.List;
 public interface PostService {
 
     // 게시글 등록
-    PostResponse createPost(PostCreateRequest request);
+    PostDetailResponse createPost(PostCreateRequest request, Integer userId);
 
     // 게시글 전체조회
     Page<PostResponse> getAllPosts(int pageNumber, int pageSize);
 
     // 게시글 상세조회
-    PostResponse getPost(Integer postId);
+    PostDetailResponse getPost(Integer postId);
 
     // 게시글 수정
-    PostResponse updatePost(Integer postId, PostUpdateRequest request);
+    PostDetailResponse updatePost(Integer postId, PostUpdateRequest request);
 
     // 게시글 삭제
     void deletePost(Integer postId);
