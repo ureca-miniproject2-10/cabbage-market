@@ -55,4 +55,6 @@ public class Post {
         this.likeCnt--;
     }
 
+    public void incrementReport() {this.reportCnt++;}
+
 }

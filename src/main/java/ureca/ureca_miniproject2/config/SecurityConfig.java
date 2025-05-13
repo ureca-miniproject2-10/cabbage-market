@@ -86,7 +86,8 @@ public class SecurityConfig {
                                         "/error.html",
                                         "/api/posts/**",
                                         "/users/**",
-                                        "/api/likes/**"
+                                        "/api/likes/**",
+                                        "/api/reports/**"
 
                                 )
                         .permitAll()

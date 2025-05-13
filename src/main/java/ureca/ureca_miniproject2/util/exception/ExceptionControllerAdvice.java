@@ -4,10 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ureca.ureca_miniproject2.util.exception.custom.ForbiddenException;
-import ureca.ureca_miniproject2.util.exception.custom.ImageUploadException;
-import ureca.ureca_miniproject2.util.exception.custom.NotFoundException;
-import ureca.ureca_miniproject2.util.exception.custom.UnAuthorizedException;
+import ureca.ureca_miniproject2.util.exception.custom.*;
 import ureca.ureca_miniproject2.util.response.ApiResponse;
 
 @RestControllerAdvice
@@ -37,4 +34,10 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<?> handleForbiddenException(ForbiddenException e) {
         return ApiResponse.fail(HttpStatus.FORBIDDEN.value(), e.getMessage());
     }
+
+    @ExceptionHandler(IsAlreadyException.class)
+    public ResponseEntity<?> handleIsAlreadyException(IsAlreadyException e) {
+        return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
+
 }
