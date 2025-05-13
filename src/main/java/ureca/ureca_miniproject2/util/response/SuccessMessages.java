@@ -19,11 +19,17 @@ public enum SuccessMessages {
     COMMENT_UPDATE(HttpStatus.OK.value(), "댓글 수정에 성공했습니다."),
     COMMENT_DELETE(HttpStatus.OK.value(), "댓글 삭제에 성공했습니다."),
 
+    // 마이페이지 관련 메시지
+    USER_MYPAGE_FIND(HttpStatus.OK.value(), "마이페이지 조회 성공"),
+    USER_PROFILE_UPDATE(HttpStatus.OK.value(), "이름 변경 성공"),
+    USER_PROFILE_IMAGE_UPDATE(HttpStatus.OK.value(), "프로필 이미지 변경 성공" ),
+
     // 좋아요 메시지
     LIKE_TOGGLE(HttpStatus.OK.value(), "좋아요 상태가 변경되었습니다."),
 
     // 신고하기 메시지
     REPORT_OK(HttpStatus.OK.value(), "신고 완료되었습니다.");
+
 
     private final int httpStatus;
     private final String message;
