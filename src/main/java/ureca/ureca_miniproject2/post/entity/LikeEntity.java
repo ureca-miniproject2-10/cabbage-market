@@ -23,4 +23,12 @@ public class LikeEntity {
     @MapsId("postId")
     @JoinColumn(name="post_id")
     private Post post;
+
+    public LikeEntity(User user, Post post) {
+        this.user = user;
+        this.post = post;
+        this.userId = user.getUserId();
+        this.postId = post.getPostId();
+    }
+
 }

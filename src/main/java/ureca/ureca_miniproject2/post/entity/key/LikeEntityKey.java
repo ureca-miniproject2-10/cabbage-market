@@ -9,6 +9,14 @@ public class LikeEntityKey implements Serializable {
 
     private Integer postId;
 
+    public LikeEntityKey() {
+    }
+
+    public LikeEntityKey(Integer userId, Integer postId) {
+        this.userId = userId;
+        this.postId = postId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
