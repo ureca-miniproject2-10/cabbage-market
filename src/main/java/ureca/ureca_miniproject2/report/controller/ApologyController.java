@@ -36,19 +36,4 @@ public class ApologyController {
         return ApiResponse.success(APOLOGY_CREATE);
     }
 
-    @GetMapping("/pending")
-    public ResponseEntity<ApiResponse<Page<ApologyResponse>>> getPendingReflectionLetters(
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Apology> letters = apologyService.getPendingReflectionLetters(pageable);
-        Page<ApologyResponse> responses = letters.map(ApologyResponse::from);
-        return ApiResponse.success(APOLOGY_READ, responses);
-    }
-
-    @PatchMapping("/{letterId}/review")
-    public ResponseEntity<Void> reviewReflectionLetter(
-            @PathVariable("letterId") Integer letterId,
-            @RequestBody ApologyReviewRequest request) {
-        apologyService.reviewApology(letterId, request.isAccepted());
-        return ResponseEntity.ok().build();
-    }
 }

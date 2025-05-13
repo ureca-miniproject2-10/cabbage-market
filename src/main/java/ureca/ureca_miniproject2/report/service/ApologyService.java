@@ -9,11 +9,13 @@ import ureca.ureca_miniproject2.post.entity.Apology;
 import ureca.ureca_miniproject2.post.entity.ApologyState;
 import ureca.ureca_miniproject2.post.entity.Post;
 import ureca.ureca_miniproject2.post.repository.PostRepository;
+import ureca.ureca_miniproject2.report.dto.ApologyResponse;
 import ureca.ureca_miniproject2.report.repository.ApologyRepository;
 import ureca.ureca_miniproject2.util.exception.custom.ForbiddenException;
 import ureca.ureca_miniproject2.util.exception.custom.NotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static ureca.ureca_miniproject2.util.response.FailureMessages.*;
@@ -35,7 +37,7 @@ public class ApologyService {
         }
 
         // 이미 반성문이 제출된 경우 확인
-        Optional<Apology> existingLetter = apologyRepository.findByPost(post);
+        Optional<Apology> existingLetter = apologyRepository.findByPostPostId(post.getPostId());
         if (existingLetter.isPresent()) {
             throw new IllegalStateException("이미 반성문이 제출되었습니다.");
         }
@@ -56,6 +58,10 @@ public class ApologyService {
         Apology apology = apologyRepository.findById(apologyId)
                 .orElseThrow(() -> new NotFoundException(APOLOGY_NOT_FOUND.getMessage()));
 
+        if (apology.getReviewedAt() != null) {
+            throw new IllegalStateException("이미 처리된 반성문입니다. 현재 상태: " + apology.getState().getState());
+        }
+
         if (isAccepted) {
             apology.accept();
             // 게시글 제한 해제
@@ -69,7 +75,13 @@ public class ApologyService {
         apologyRepository.save(apology);
     }
 
-    public Page<Apology> getPendingReflectionLetters(Pageable pageable) {
-        return apologyRepository.findByState(ApologyState.PENDING, pageable);
+    @Transactional
+    public List<ApologyResponse> getPendingApology() {
+        List<Apology> apologies = apologyRepository.findByState(ApologyState.PENDING);
+        return apologies.stream().map(ApologyResponse::from).toList();
+    }
+
+    public Optional<Apology> getApologyById(Integer id) {
+        return apologyRepository.findById(id);
     }
 }

@@ -29,10 +29,12 @@ public enum SuccessMessages {
 
     // 신고하기 메시지
     REPORT_OK(HttpStatus.OK.value(), "신고 완료되었습니다."),
+    REPORT_READ(HttpStatus.OK.value(), "신고내역 불러오기 성공"),
 
     // 반성문 관련 메시지
     APOLOGY_READ(HttpStatus.OK.value(), "반성문 불러오기 성공"),
-    APOLOGY_CREATE(HttpStatus.OK.value(), "반성문 제출 성공");
+    APOLOGY_CREATE(HttpStatus.OK.value(), "반성문 제출 성공"),
+    APPEAL_REVIEW(HttpStatus.OK.value(), "반성문 리뷰 성공");
     private final int httpStatus;
     private final String message;
 }

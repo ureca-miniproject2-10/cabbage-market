@@ -1,17 +1,13 @@
 package ureca.ureca_miniproject2.report.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ureca.ureca_miniproject2.post.entity.Apology;
-import ureca.ureca_miniproject2.post.entity.ApologyState;
+import org.springframework.transaction.annotation.Transactional;
 import ureca.ureca_miniproject2.post.entity.Post;
 import ureca.ureca_miniproject2.post.entity.Report;
 import ureca.ureca_miniproject2.post.entity.key.ReportKey;
 import ureca.ureca_miniproject2.post.repository.PostRepository;
+import ureca.ureca_miniproject2.report.dto.ReportResponse;
 import ureca.ureca_miniproject2.report.repository.ApologyRepository;
 import ureca.ureca_miniproject2.report.repository.ReportRepository;
 import ureca.ureca_miniproject2.user.entity.User;
@@ -22,6 +18,7 @@ import ureca.ureca_miniproject2.util.exception.custom.NotFoundException;
 import ureca.ureca_miniproject2.util.response.FailureMessages;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static ureca.ureca_miniproject2.util.response.FailureMessages.*;
@@ -64,5 +61,12 @@ public class ReportServiceImpl implements ReportService{
         }
     }
 
-
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReportResponse> getAllReports() {
+        List<Report> reports = reportRepository.findAll();
+        return reports.stream()
+                .map(ReportResponse::from)
+                .toList();
+    }
 }

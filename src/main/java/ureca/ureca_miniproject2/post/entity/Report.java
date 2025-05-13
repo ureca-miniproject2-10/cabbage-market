@@ -1,6 +1,7 @@
 package ureca.ureca_miniproject2.post.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ureca.ureca_miniproject2.post.entity.key.ReportKey;
 import ureca.ureca_miniproject2.user.entity.User;
@@ -8,6 +9,7 @@ import ureca.ureca_miniproject2.user.entity.User;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 @NoArgsConstructor
 @IdClass(ReportKey.class)
 public class Report {
