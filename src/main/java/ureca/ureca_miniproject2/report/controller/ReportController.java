@@ -5,19 +5,15 @@ package ureca.ureca_miniproject2.report.controller;
 // 한번 신고하면 비활성화 되도록
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import ureca.ureca_miniproject2.config.MyUserDetails;
+import ureca.ureca_miniproject2.config.userdetails.MyUserDetails;
 import ureca.ureca_miniproject2.report.dto.ReportRequestDto;
 import ureca.ureca_miniproject2.report.service.ReportService;
-import ureca.ureca_miniproject2.util.exception.custom.IsAlreadyException;
 import ureca.ureca_miniproject2.util.exception.custom.UnAuthorizedException;
 import ureca.ureca_miniproject2.util.response.ApiResponse;
 import ureca.ureca_miniproject2.util.response.SuccessMessages;
-
-import java.nio.file.attribute.UserPrincipal;
 
 import static ureca.ureca_miniproject2.util.response.FailureMessages.UNAUTHORIZED;
 

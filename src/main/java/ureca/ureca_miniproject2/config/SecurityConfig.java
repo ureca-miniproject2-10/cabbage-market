@@ -9,6 +9,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,11 +21,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
+import ureca.ureca_miniproject2.config.handler.CustomAccessDeniedHandler;
+import ureca.ureca_miniproject2.config.handler.MyAuthenticationFailureHandler;
+import ureca.ureca_miniproject2.config.handler.MyAuthenticationSuccessHandler;
 
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -45,7 +50,8 @@ public class SecurityConfig {
             HttpSecurity http,
             AuthenticationManager authenticationManager,
             MyAuthenticationSuccessHandler successHandler,
-            MyAuthenticationFailureHandler failureHandler
+            MyAuthenticationFailureHandler failureHandler,
+            CustomAccessDeniedHandler accessDeniedHandler
     ) throws Exception {
         http
                 // CSRF 토큰을 쿠키에 저장 , 클라이언트가 이를 요청에 포함하도록함
@@ -90,16 +96,16 @@ public class SecurityConfig {
                                         "/api/reports/**",
                                         "/api/posts/*/view", // 조회수 증가
                                         "/posts.html", // 게시글 페이지
-                                        "/postDetail.html", // 게시글 상세 페이지
-                                        "/images/**" // 디폴트 이미지
+                                        "/images/**", // 디폴트 이미지
+                                        "/navbar.html"
 
                                 )
                         .permitAll()
                                 // 관리자 전용 페이지
                                 .requestMatchers("/admin/**", "/admin.html").hasAuthority("ROLE_ADMIN")
                                 // 게시글 조회는 모든 유저 접근 허용
-//                                .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
-//                                .requestMatchers(HttpMethod.POST, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
 
                                 // 좋아요
                                 .requestMatchers(HttpMethod.GET, "/api/likes/**").permitAll()
@@ -115,12 +121,13 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
 
                 )
-                // 접근 권한 예외 처리페이지 ( 인가되지 않은 사용자가 보호된 리소스에 접근할때 처리 )
-//                .exceptionHandling(ex -> ex
+//                 접근 권한 예외 처리페이지 ( 인가되지 않은 사용자가 보호된 리소스에 접근할때 처리 )
+                .exceptionHandling(ex -> ex
 //                        .authenticationEntryPoint((request, response, authException) -> {
 //                            response.sendRedirect("/error.html");
 //                        })
-//                )
+                                .accessDeniedHandler(accessDeniedHandler)
+                )
 
                 // 폼 로그인 설정
                 .formLogin(form -> form

@@ -7,11 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import ureca.ureca_miniproject2.comment.dto.CommentRequestDto;
 import ureca.ureca_miniproject2.comment.dto.CommentResponseDto;
 import ureca.ureca_miniproject2.comment.service.CommentService;
-import ureca.ureca_miniproject2.config.MyUserDetails;
+import ureca.ureca_miniproject2.config.userdetails.MyUserDetails;
 import ureca.ureca_miniproject2.util.exception.custom.UnAuthorizedException;
 import ureca.ureca_miniproject2.util.response.ApiResponse;
-import ureca.ureca_miniproject2.util.response.FailureMessages;
-import ureca.ureca_miniproject2.util.response.SuccessMessages;
 
 import static ureca.ureca_miniproject2.util.response.FailureMessages.*;
 import static ureca.ureca_miniproject2.util.response.SuccessMessages.*;

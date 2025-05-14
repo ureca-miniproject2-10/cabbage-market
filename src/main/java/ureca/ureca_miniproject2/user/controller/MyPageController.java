@@ -6,13 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ureca.ureca_miniproject2.config.MyUserDetails;
+import ureca.ureca_miniproject2.config.userdetails.MyUserDetails;
 import ureca.ureca_miniproject2.user.dto.MyPageDto;
 import ureca.ureca_miniproject2.user.dto.ProfileUpdateRequest;
 import ureca.ureca_miniproject2.user.service.MyPageService;
 import ureca.ureca_miniproject2.util.exception.custom.UnAuthorizedException;
 import ureca.ureca_miniproject2.util.response.ApiResponse;
-import ureca.ureca_miniproject2.util.response.FailureMessages;
 import ureca.ureca_miniproject2.util.response.SuccessMessages;
 
 import java.io.IOException;
