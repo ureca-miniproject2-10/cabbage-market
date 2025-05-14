@@ -49,6 +49,7 @@ public class MyUserDetailService implements UserDetailsService {
                 .userId(user.getUserId())  // 사용자 ID 추가
                 .username(user.getUsername())
                 .password(user.getPassword())
+                .profileImageUrl(user.getProfile_image())
                 .authorities(authorities)
                 .build();
     }
