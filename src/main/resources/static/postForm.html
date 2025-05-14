@@ -1,10 +1,424 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 등록 - 배추마켓</title>
+    <link rel="stylesheet" href="/common/styles.css">
+    <!-- 구글 폰트 추가 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 게시글 등록 페이지 전용 스타일 */
+        .post-form-container {
+            max-width: 1024px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            margin: 0 8px;
+        }
+
+        .post-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .image-section {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .details-section {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .image-upload-container {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9f9f9;
+        }
+
+        .image-upload-container:hover {
+            border-color: var(--primary-color);
+        }
+
+        .image-upload-icon {
+            font-size: 48px;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        .image-upload-text {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 400px;
+            object-fit: contain;
+            display: none;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(46, 139, 87, 0.2);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .product-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .product-price {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        .product-description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin-bottom: 30px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .cancel-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #f1f1f1;
+            color: var(--text-color);
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .cancel-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .form-buttons {
+            margin-top: 30px;
+        }
+
+        /* 로딩 스피너 */
+        .loading-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .submit-btn.loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .submit-btn.loading .loading-spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 반응형 스타일 */
+        @media (max-width: 768px) {
+            .post-form {
+                flex-direction: column;
+            }
+
+            .image-upload-container,
+            .image-preview {
+                height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
+<!-- 네비게이션 바 컨테이너 -->
+<div id="navbar-container"></div>
 
+<!-- 메인 콘텐츠 -->
+<main class="main">
+    <div class="post-form-container">
+        <form id="post-form" class="post-form">
+            <div class="image-section">
+                <img id="image-preview" class="image-preview" src="/placeholder.svg" alt="상품 이미지 미리보기">
+                <div id="image-upload-container" class="image-upload-container">
+                    <div class="image-upload-icon">+</div>
+                    <p class="image-upload-text">이미지를 업로드해주세요</p>
+                    <p class="image-upload-text">클릭하거나 이미지를 끌어다 놓으세요</p>
+                </div>
+                <input type="file" id="file-input" class="file-input" accept="image/*">
+            </div>
+
+            <div class="details-section">
+                <div class="form-group">
+                    <input type="text" id="title" name="title" placeholder="상품명을 입력해주세요" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="number" id="price" name="price" placeholder="가격을 입력해주세요" min="0" required>
+                    <span>원</span>
+                </div>
+
+                <div class="form-group">
+                    <textarea id="content" name="content" placeholder="상품 설명을 입력해주세요&#10;&#10;구입 시기, 사용감, 하자 유무 등 구매자에게 필요한 정보를 작성해주세요." required></textarea>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" id="submit-btn" class="submit-btn">
+                        <span class="loading-spinner"></span>
+                        <span>등록 완료하기</span>
+                    </button>
+                    <button type="button" id="cancel-btn" class="cancel-btn">취소</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+<!-- 푸터 컨테이너 -->
+<div id="footer-container"></div>
+
+<!-- 공통 JavaScript 파일 -->
+<script src="/common/common.js"></script>
+<script src="/common/csrf.js"></script>
+<script>
+    // 이미지 미리보기
+    function previewImage(file) {
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('image-preview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            document.getElementById('image-upload-container').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // 게시글 등록 요청
+    async function createPost(formData) {
+        try {
+            const csrfToken = await fetchCsrfToken();
+
+            const response = await fetch('/api/posts', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'X-XSRF-TOKEN': csrfToken
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('게시글 등록에 실패했습니다.');
+            }
+
+            const result = await response.json();
+            alert('게시글이 성공적으로 등록되었습니다.');
+
+            // 게시글 상세 페이지로 이동
+            window.location.href = `/postDetail.html?postId=${result.data.postId}`;
+        } catch (error) {
+            console.error('게시글 등록 오류:', error);
+            alert('게시글 등록에 실패했습니다.');
+
+            // 로딩 상태 해제
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+        }
+    }
+
+    // DOM 로드 후 초기화
+    document.addEventListener('DOMContentLoaded', () => {
+        // 이미지 업로드 영역 클릭 이벤트
+        document.getElementById('image-upload-container').addEventListener('click', () => {
+            document.getElementById('file-input').click();
+        });
+
+        // 파일 입력 변경 이벤트
+        document.getElementById('file-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                previewImage(file);
+            }
+        });
+
+        // 이미지 드래그 앤 드롭 이벤트
+        const uploadContainer = document.getElementById('image-upload-container');
+
+        uploadContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadContainer.style.borderColor = 'var(--primary-color)';
+        });
+
+        uploadContainer.addEventListener('dragleave', () => {
+            uploadContainer.style.borderColor = '#ddd';
+        });
+
+        uploadContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadContainer.style.borderColor = '#ddd';
+
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                document.getElementById('file-input').files = e.dataTransfer.files;
+                previewImage(file);
+            } else {
+                alert('이미지 파일만 업로드할 수 있습니다.');
+            }
+        });
+
+        // 취소 버튼 클릭 이벤트
+        document.getElementById('cancel-btn').addEventListener('click', () => {
+            window.history.back();
+        });
+
+        // 폼 제출 이벤트
+        document.getElementById('post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('title').value.trim();
+            const price = document.getElementById('price').value.trim();
+            const content = document.getElementById('content').value.trim();
+            const fileInput = document.getElementById('file-input');
+
+            if (!title || !price || !content) {
+                alert('모든 필드를 입력해주세요.');
+                return;
+            }
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('상품 이미지를 업로드해주세요.');
+                return;
+            }
+
+            // 로딩 상태 설정
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            // FormData 객체 생성
+            const formData = new FormData();
+
+            // 요청 데이터 생성
+            const requestData = {
+                title: title,
+                content: content,
+                price: parseInt(price),
+                imageUrl: ''
+            };
+
+            // 요청 데이터를 JSON 문자열로 변환하여 FormData에 추가
+            formData.append('request', new Blob([JSON.stringify(requestData)], { type: 'application/json' }));
+
+            // 이미지 파일이 있으면 FormData에 추가
+            if (fileInput.files && fileInput.files.length > 0) {
+                formData.append('image', fileInput.files[0]);
+            }
+
+            // 게시글 등록 요청
+            await createPost(formData);
+        });
+    });
+</script>
 </body>
 </html>

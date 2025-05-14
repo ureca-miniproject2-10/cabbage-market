@@ -58,7 +58,7 @@ public class LoginController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Map<String, String>> getCurrentUser(Authentication authentication) {
+    public ResponseEntity<Map<String, Object>> getCurrentUser(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getName())) {
             Object principal = authentication.getPrincipal();
 
@@ -66,7 +66,8 @@ public class LoginController {
                     .anyMatch(auth -> "ROLE_ADMIN".equals(auth.getAuthority()));
 
             if (principal instanceof MyUserDetails userDetails) {
-                Map<String, String> response = new HashMap<>();
+                Map<String, Object> response = new HashMap<>();
+                response.put("userId", userDetails.getUserId());
                 response.put("username", userDetails.getUsername());
                 response.put("profileImageUrl", userDetails.getProfileImageUrl());
                 response.put("name", userDetails.getName());
@@ -76,7 +77,7 @@ public class LoginController {
             }
         }
 
-        Map<String, String> error = new HashMap<>();
+        Map<String, Object> error = new HashMap<>();
         error.put("status", "unauthenticated");
         error.put("message", "로그인되지 않았습니다.");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
