@@ -1,10 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배추마켓 - 게시글 상세</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .badge-state {
+            font-size: 0.85rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background-color: #f0f0f0;
+        }
+        .post-image {
+            max-height: 400px;
+            object-fit: cover;
+        }
+        .chat-input {
+            border-radius: 20px 0 0 20px;
+        }
+        .chat-send {
+            border-radius: 0 20px 20px 0;
+        }
+    </style>
 </head>
 <body>
+<div class="container mt-5">
+    <div class="row">
+        <!-- 이미지 영역 -->
+        <div class="col-md-6">
+            <img id="postImage" src="/images/default_post.jpg" class="img-fluid rounded post-image" alt="게시글 이미지">
+        </div>
 
+        <!-- 상세 정보 영역 -->
+        <div class="col-md-6">
+            <span id="postState" class="badge-state text-muted mb-2 d-inline-block">상태</span>
+            <h4 id="postTitle" class="fw-bold"></h4>
+            <h5 id="postPrice" class="text-success fw-bold mb-3"></h5>
+            <p id="postContent"></p>
+
+            <p class="text-muted small">
+                ❤️ <span id="postLike">0</span> · 👁 <span id="postView">0</span>
+            </p>
+            <p class="text-muted small" id="postCreated">날짜</p>
+
+            <div class="d-flex align-items-center mb-3">
+                <img id="userImage" src="/images/default_user.png" alt="유저 이미지" class="rounded-circle me-2" width="40" height="40">
+                <span id="userName" class="fw-semibold">익명</span>
+            </div>
+
+            <!-- 채팅창 -->
+            <div class="input-group">
+                <input type="text" class="form-control chat-input" id="chatInput" placeholder="채팅을 입력하세요">
+                <button class="btn btn-success chat-send" onclick="sendChat()">전송</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const postId = new URLSearchParams(location.search).get("postId");
+        if (postId) fetchPostDetail(postId);
+    });
+
+    function fetchPostDetail(postId) {
+        fetch(`/api/posts/${postId}`)
+            .then(res => res.json())
+            .then(result => {
+                const post = result.data;
+                document.getElementById("postImage").src = post.imageUrl || "/images/default_post.jpg";
+                document.getElementById("postTitle").innerText = post.title;
+                document.getElementById("postPrice").innerText = post.price ? post.price.toLocaleString() + '원' : '나눔';
+                document.getElementById("postState").innerText = getPostStateLabel(post.state);
+                document.getElementById("postLike").innerText = post.likeCnt;
+                document.getElementById("postView").innerText = post.viewCnt;
+                document.getElementById("postContent").innerText = post.content;
+                document.getElementById("postCreated").innerText = new Date(post.createdAt).toLocaleString();
+                document.getElementById("userName").innerText = post.userSimpleDto?.username || "익명";
+            });
+    }
+
+    function getPostStateLabel(state) {
+        switch (state) {
+            case "SALE": return "판매중";
+            case "SOLD_OUT": return "거래종료";
+            case "RESTRICT": return "거래제한";
+            default: return "알 수 없음";
+        }
+    }
+
+    function sendChat() {
+        const message = document.getElementById("chatInput").value;
+        if (!message) return alert("채팅 내용을 입력하세요.");
+        alert("채팅 전송: " + message);
+        document.getElementById("chatInput").value = "";
+    }
+</script>
 </body>
 </html>
