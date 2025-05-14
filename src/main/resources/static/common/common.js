@@ -59,9 +59,9 @@ function updateNavbarUI(userData) {
                 <div class="profile-image-container">
                     <img src="${profileImageUrl}" alt="프로필" class="profile-image">
                 </div>
-                <span class="username">${userData.username}</span>
+                <span class="username">${userData.name}</span>
                 ${adminButton}
-                <a href="/mypage" class="nav-btn mypage-btn">마이페이지</a>
+                <a href="/mypage.html" class="nav-btn mypage-btn">마이페이지</a>
                 <button id="logout-btn" class="nav-btn logout-btn">로그아웃</button>
             </div>
         `;
