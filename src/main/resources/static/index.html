@@ -24,8 +24,8 @@
       <!-- 검색 바 -->
       <div class="search-bar">
         <div class="search-input-wrapper">
-          <input type="text" class="search-input" placeholder="찾고 싶은 물건을 검색해보세요">
-          <button class="search-btn">
+          <input type="text" id="searchInput" class="search-input" placeholder="찾고 싶은 물건을 검색해보세요">
+          <button class="search-btn" type="button" onclick="redirectToSearch(event)">
             <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -52,7 +52,19 @@
 
 <!-- 푸터 컨테이너 -->
 <div id="footer-container"></div>
+<script>
+  function redirectToSearch(event) {
+    event.preventDefault(); // 기본 form 제출 막기
 
+    const input = document.getElementById("searchInput");
+    if (input) {
+      const query = input.value.trim();
+      if (query !== "") {
+        window.location.href = `/posts.html?query=${encodeURIComponent(query)}`;
+      }
+    }
+  }
+</script>
 <script src="/common/csrf.js"></script>
 <script src="/common/common.js"></script>
 </body>
