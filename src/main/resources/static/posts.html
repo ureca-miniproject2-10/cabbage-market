@@ -88,20 +88,23 @@
             <input
                     type="text"
                     id="searchKeyword"
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    class="w-full pl-4 pr-12 py-3 border-2 border-emerald-500 text-black rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     placeholder="찾고 싶은 물건을 검색해보세요"
             >
             <button
                     id="searchButton"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 bg-emerald-600 text-white p-2 rounded-md hover:bg-emerald-700 transition-colors"
+                    type="button"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600 hover:text-emerald-800"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
             </button>
         </div>
     </div>
+
 
     <!-- 필터 바 -->
     <div class="flex flex-wrap justify-center items-center gap-4 mb-8">
@@ -465,13 +468,45 @@
     }
     document.addEventListener("DOMContentLoaded", async () => {
         const loggedIn = await isLoggedIn();
-
         if (loggedIn) {
             document.getElementById("write-post-button").classList.remove("hidden");
-        } else {
-            document.getElementById("write-post-button").classList.add("hidden");
         }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const keyword = urlParams.get("query");
+
+        if (keyword) {
+            document.getElementById("searchKeyword").value = keyword;
+        }
+
+        if (keyword && keyword.trim() !== "") {
+            fetch(`/api/posts/search?keyword=${encodeURIComponent(keyword)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const { content, totalPages, number } = data.data;
+                        renderPosts(content); // ✅ 반드시 이 구조
+                        renderPaginationWithSearch(totalPages, number, keyword);
+                    } else {
+                        alert("검색 결과 없음");
+                    }
+                })
+                .catch(err => {
+                    console.error("검색 에러:", err);
+                });
+        } else {
+            fetchPosts(0);
+        }
+
+        // 검색 이벤트
+        document.getElementById('searchButton').addEventListener('click', () => searchPostsWithPrice());
+        document.getElementById('searchKeyword').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchPostsWithPrice();
+        });
     });
+
+
+
 
 </script>
 
