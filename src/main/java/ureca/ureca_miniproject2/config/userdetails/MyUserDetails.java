@@ -17,6 +17,9 @@ public class MyUserDetails implements UserDetails {
     @Getter
     private final Integer userId;
     private final String username;
+
+    @Getter
+    private String name;
     private final String password;
 
     @Getter

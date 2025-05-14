@@ -69,6 +69,7 @@ public class LoginController {
                 Map<String, String> response = new HashMap<>();
                 response.put("username", userDetails.getUsername());
                 response.put("profileImageUrl", userDetails.getProfileImageUrl());
+                response.put("name", userDetails.getName());
                 response.put("isAdmin", String.valueOf(isAdmin));
                 response.put("status", "authenticated");
                 return ResponseEntity.ok(response);
