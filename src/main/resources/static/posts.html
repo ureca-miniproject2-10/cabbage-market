@@ -5,23 +5,235 @@
     <title>게시글 목록</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* 기본 스타일 */
+        :root {
+            --primary-color: #2E8B57; /* 초록색 (SeaGreen) */
+            --primary-light: #3CB371; /* 연한 초록색 (MediumSeaGreen) */
+            --primary-dark: #006400; /* 진한 초록색 (DarkGreen) */
+            --text-color: #212529;
+            --text-light: #495057;
+            --bg-color: #fff;
+            --bg-light: #f8f9fa;
+            --border-color: #e9ecef;
+        }
+        body {
+            padding-top: 80px;
+            padding-bottom: 40px;
+            overflow-x: hidden;
+        }
+
+        .post-card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        .post-card-hover:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
         .post-card img {
             width: 100%;
             height: 180px;
             object-fit: cover;
         }
+
+        .card {
+            width: 100%;
+            min-width: 0;
+        }
+        .post-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        /* 페이지네이션 */
+        .pagination .page-item .page-link {
+            border: 1px solid #198754;
+            color: #198754;
+            border-radius: 50px;
+            margin: 0 4px;
+            padding: 6px 14px;
+            transition: all 0.2s;
+        }
+
+        .pagination .page-item .page-link:hover {
+            background-color: #198754;
+            color: #fff;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #198754;
+            color: #fff;
+            border-color: #198754;
+        }
+
+        /* 검색 바 */
+        .search-bar {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 16px;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--primary-color);
+            border-radius: 9999px;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            color: var(--primary-dark);
+        }
+
+        .search-icon {
+            width: 20px;
+            height: 20px;
+        }
+        .filter-bar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 1.5rem;
+        }
+
+        .filter-btn {
+            border: 1px solid #198754;
+            color: #198754;
+            background-color: white;
+            border-radius: 20px;
+            padding: 5px 15px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background-color: #198754;
+            color: white;
+        }
+
+        .filter-input {
+            border-radius: 20px;
+            border: 1px solid #198754;
+            padding: 5px 12px;
+            width: 100px;
+        }
+
+        .btn-apply {
+            background-color: #198754;
+            color: white;
+            border-radius: 20px;
+            padding: 5px 12px;
+            border: none;
+        }
+
+        .form-check-input:checked {
+            background-color: #198754;
+            border-color: #198754;
+        }
+
+        .form-check-label {
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h2 class="mb-4">📋 전체 게시글</h2>
+<nav class="navbar navbar-expand-lg bg-white shadow fixed-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-primary" href="/" style="font-size: 1.5rem;">🥬 배추마켓</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="row" id="post-list"></div>
+        <div class="collapse navbar-collapse" id="navbarContent">
+        </div>
+    </div>
+</nav>
+
+
+<div class="container mt-5">
+    <!-- 검색 바 -->
+    <div class="search-container d-flex justify-content-center align-items-center">
+        <div class="search-bar d-flex justify-content-center mb-4">
+            <div class="search-input-wrapper d-flex align-items-center" style="max-width: 600px; width: 100%;">
+                <input type="text" id="searchKeyword" class="form-control search-input" placeholder="찾고 싶은 물건을 검색해보세요" style="flex: 1;">
+                <button class="btn search-btn ms-2" onclick="searchPostsWithPrice()" type="button">
+                    <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="filter-bar container d-flex flex-wrap align-items-center justify-content-center gap-3 mt-4">
+        <!-- 상태 필터 라디오 -->
+        <div class="d-flex align-items-center gap-3">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="postState" id="stateAll" value="" checked>
+                <label class="form-check-label" for="stateAll">전체</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="postState" id="stateSale" value="SALE">
+                <label class="form-check-label" for="stateSale">판매중</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="postState" id="stateSoldOut" value="SOLD_OUT">
+                <label class="form-check-label" for="stateSoldOut">거래종료</label>
+            </div>
+        </div>
+
+        <!-- 가격 필터 버튼 -->
+        <div class="btn-group" role="group" aria-label="가격 필터">
+            <button class="btn filter-btn" onclick="filterByPrice(0, 0)">전체</button>
+            <button class="btn filter-btn" onclick="filterByPrice(0, 5000)">5,000원 이하</button>
+            <button class="btn filter-btn" onclick="filterByPrice(0, 10000)">10,000원 이하</button>
+            <button class="btn filter-btn" onclick="filterByPrice(0, 20000)">20,000원 이하</button>
+        </div>
+
+        <!-- 직접 가격 입력 -->
+        <div class="d-flex align-items-center gap-2">
+            <input type="number" id="minPrice" class="form-control filter-input" placeholder="최소 가격">
+            <span>-</span>
+            <input type="number" id="maxPrice" class="form-control filter-input" placeholder="최대 가격">
+            <button class="btn btn-apply" onclick="applyPriceFilter()">적용</button>
+        </div>
+    </div>
+
+
+
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="post-list"></div>
 
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
 </div>
+
 
 <script>
 
@@ -29,7 +241,7 @@
 
     async function fetchPosts(page = 0) {
         currentPage = page;
-        const response = await fetch(`/api/posts?pageNumber=${page}&pageSize=10`);
+        const response = await fetch(`/api/posts?pageNumber=${page}&pageSize=12`);
         const result = await response.json();
 
         if (!result.success) {
@@ -49,22 +261,31 @@
 
         posts.forEach(post => {
             const imageUrl = post.imageUrl || "/images/default_post.jpg";
+            const formattedDate = new Date(post.createdAt).toLocaleString('ko-KR');
+            const stateLabel = getPostStateLabel(post.state); // 상태 텍스트 변환
+
             const card = `
-        <div class="col-md-4 mb-4">
-          <div class="card post-card shadow-sm">
-            <img src="${imageUrl}" class="card-img-top" alt="썸네일">
-            <div class="card-body">
-              <h5 class="card-title">${post.title}</h5>
-              <p class="card-text">💰 ${post.price}원</p>
-              <p class="card-text text-muted small">👤 ${post.name} · 👁️ ${post.viewCnt} · 🚩 ${post.reportCnt}</p>
-              <p class="card-text text-muted small">${new Date(post.createdAt).toLocaleString()}</p>
-              <a href="/posts/${post.postId}" class="btn btn-outline-primary btn-sm">자세히 보기</a>
-            </div>
-          </div>
-        </div>`;
+                <div class="col">
+                  <a href="/posts/${post.postId}" class="card-link text-decoration-none text-dark">
+                    <div class="card h-100 shadow-sm border-0 post-card-hover">
+                      <img src="${imageUrl}" class="card-img-top" alt="썸네일" style="height: 200px; object-fit: cover;">
+                      <div class="card-body p-2">
+                        <h6 class="card-title text-truncate mb-1">${post.title}</h6>
+                        <p class="mb-1 fw-bold">${post.price ? post.price.toLocaleString() + '원' : '나눔'}</p>
+                        <p class="mb-1 text-muted small">
+                          🏷️ ${stateLabel} · 조회수 ${post.viewCnt} · ❤️ ${post.likeCnt}
+                        </p>
+                        <small class="text-muted">${formattedDate}</small>
+                      </div>
+                    </div>
+                  </a>
+                </div>`;
+
             postList.innerHTML += card;
         });
     }
+
+
 
     function renderPagination(totalPages, currentPage) {
         const pagination = document.getElementById("pagination");
@@ -78,6 +299,86 @@
         </li>`;
         }
     }
+
+    function renderPaginationWithSearch(totalPages, currentPage, keyword, minPrice = 0, maxPrice = 0, state = "") {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        for (let i = 0; i < totalPages; i++) {
+            const activeClass = i === currentPage ? "active" : "";
+            pagination.innerHTML += `
+        <li class="page-item ${activeClass}">
+          <button class="page-link" onclick="searchPostsWithPrice(${minPrice}, ${maxPrice}, ${i})">${i + 1}</button>
+        </li>`;
+        }
+    }
+
+
+
+    function filterByPrice(min, max) {
+        document.getElementById("minPrice").value = min;
+        document.getElementById("maxPrice").value = max;
+        searchPostsWithPrice(min, max);
+    }
+
+    function applyPriceFilter() {
+        const min = parseInt(document.getElementById("minPrice").value) || 0;
+        const max = parseInt(document.getElementById("maxPrice").value) || 0;
+        searchPostsWithPrice(min, max);
+    }
+
+    function searchPostsWithPrice(minPrice = null, maxPrice = null, page = 0) {
+        const keyword = document.getElementById("searchKeyword").value.trim();
+        const state = getSelectedPostState();
+
+        if (minPrice === null || minPrice === undefined) {
+            minPrice = parseInt(document.getElementById("minPrice").value) || 0;
+        }
+        if (maxPrice === null || maxPrice === undefined) {
+            maxPrice = parseInt(document.getElementById("maxPrice").value) || 0;
+        }
+
+        let url = `/api/posts/search?pageNumber=${page}&pageSize=12`;
+
+
+        if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+        if (minPrice !== 0 || maxPrice !== 0) {
+            url += `&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+        }
+        if (state) {
+            url += `&state=${state}`;
+        }
+
+        fetch(url)
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    const { content, totalPages, number } = result.data;
+                    renderPosts(content);
+                    renderPaginationWithSearch(totalPages, number, keyword, minPrice, maxPrice, state);
+                } else {
+                    alert("검색 결과가 없습니다.");
+                }
+            });
+    }
+
+
+    function getSelectedPostState() {
+        const selected = document.querySelector('input[name="postState"]:checked');
+        return selected ? selected.value : "";
+    }
+
+    // 상태 라벨 변환
+    function getPostStateLabel(state) {
+        switch (state) {
+            case 'SALE': return '판매중';
+            case 'SOLD_OUT': return '거래종료';
+            case 'RESTRICT': return '거래제한';
+            default: return '상태없음';
+        }
+    }
+
+
 
     // 초기 로딩
     fetchPosts(currentPage);

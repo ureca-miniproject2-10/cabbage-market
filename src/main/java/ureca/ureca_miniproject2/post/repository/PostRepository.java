@@ -18,7 +18,14 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     List<Post> findByUserOrderByCreatedAtDesc(User user);
 
-    Page<Post> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
+    Page<Post> findByTitleContainingIgnoreCaseAndPriceBetween(
+            String keyword, int minPrice, int maxPrice, Pageable pageable
+    );
+
+    Page<Post> findByTitleContainingIgnoreCaseAndPriceBetweenAndState(
+            String keyword, int minPrice, int maxPrice, PostState state, Pageable pageable
+    );
+
 
     List<Post> findByState(PostState postState);
 }
