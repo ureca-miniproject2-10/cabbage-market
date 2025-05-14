@@ -14,6 +14,7 @@ import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
 import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
 import ureca.ureca_miniproject2.post.dto.PostResponse;
 import ureca.ureca_miniproject2.post.dto.PostUpdateRequest;
+import ureca.ureca_miniproject2.post.entity.PostState;
 import ureca.ureca_miniproject2.post.service.PostService;
 import ureca.ureca_miniproject2.util.exception.custom.ForbiddenException;
 import ureca.ureca_miniproject2.util.image.ImageService;
@@ -144,13 +145,20 @@ public class PostController {
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<Page<PostResponse>>> searchPosts(
-            @RequestParam("keyword") String keyword,
-            @RequestParam(name="pageNumber", defaultValue = "0") int pageNumber,
-            @RequestParam(name="pageSize", defaultValue = "10") int pageSize
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(name = "minPrice", required = false) Integer minPrice,
+            @RequestParam(name = "maxPrice", required = false) Integer maxPrice,
+            @RequestParam(name = "state", required = false) PostState state  // ✅ enum 받기
     ) {
-        Page<PostResponse> postPage = postService.searchPostsByTitle(keyword, pageNumber, pageSize);
+        String safeKeyword = (keyword != null) ? keyword : "";
+        Page<PostResponse> postPage = postService.searchPostsByTitle(safeKeyword, pageNumber, pageSize, minPrice, maxPrice, state);
         return ApiResponse.success(SuccessMessages.POST_FIND_ALL, postPage);
     }
+
+
+
 
 
 }

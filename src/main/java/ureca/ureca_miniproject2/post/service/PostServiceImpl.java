@@ -131,13 +131,29 @@ public class PostServiceImpl implements PostService{
 
     // 제목으로 게시글 검색
     @Override
-    public Page<PostResponse> searchPostsByTitle(String keyword, int pageNumber, int pageSize) {
+    public Page<PostResponse> searchPostsByTitle(String keyword, int pageNumber, int pageSize,
+                                                 Integer minPrice, Integer maxPrice, PostState state) {
         int correctedPageNumber = Math.max(0, pageNumber);
         PageRequest pageable = PageRequest.of(correctedPageNumber, pageSize);
 
-        return postRepository.findByTitleContainingIgnoreCase(keyword, pageable)
-                .map(PostResponse::from);
+        int finalMin = (minPrice != null) ? minPrice : 0;
+        int finalMax = (maxPrice != null) ? maxPrice : Integer.MAX_VALUE;
+
+        Page<Post> posts;
+        if (state != null) {
+            posts = postRepository.findByTitleContainingIgnoreCaseAndPriceBetweenAndState(
+                    keyword, finalMin, finalMax, state, pageable
+            );
+        } else {
+            posts = postRepository.findByTitleContainingIgnoreCaseAndPriceBetween(
+                    keyword, finalMin, finalMax, pageable
+            );
+        }
+
+        return posts.map(PostResponse::from);
     }
+
+
 
 
 
