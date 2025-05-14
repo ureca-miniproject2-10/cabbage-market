@@ -2,286 +2,381 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 목록</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/common/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 구글 폰트 추가 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            50: "#ecfdf5",
+                            100: "#d1fae5",
+                            200: "#a7f3d0",
+                            300: "#6ee7b7",
+                            400: "#34d399",
+                            500: "#10b981",
+                            600: "#059669",
+                            700: "#047857",
+                            800: "#065f46",
+                            900: "#064e3b",
+                            950: "#022c22",
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* Bootstrap과 충돌 피하기 위해 custom-navbar로 분리 */
-        .custom-navbar {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background-color: var(--bg-color);
-            border-bottom: 1px solid var(--border-color);
+        .thumbnail-wrapper {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            border-bottom: 1px solid #e0e0e0;
         }
 
-        .custom-navbar .navbar-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 64px;
-            padding: 0 24px;
+        .post-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
-        .custom-navbar .logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .custom-navbar .logo-icon {
-            width: 32px;
-            height: 32px;
-            margin-right: 8px;
-        }
-
-        .custom-navbar .logo-text {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        /* 오른쪽 사용자 + 버튼 정렬 */
-        .custom-navbar .nav-buttons {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* 사용자 정보 */
-        .custom-navbar .user-info {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-right: 8px;
-        }
-
-        .custom-navbar .profile-img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 1px solid var(--primary-color);
-        }
-
-        .custom-navbar .username {
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-
-        /* 버튼 스타일 */
-        .custom-navbar .nav-btn {
-            padding: 6px 14px;
+        /* 판매중 배지 */
+        .status-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: #059669; /* emerald-600 */
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
             border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.2s;
-            font-size: 14px;
-            border: none;
-            cursor: pointer;
+            font-weight: 600;
+            z-index: 10;
         }
 
-        .custom-navbar .admin-btn {
-            background-color: #ff4500;
-            color: #fff;
+        /* 커스텀 스타일 */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
 
-        .custom-navbar .admin-btn:hover {
-            background-color: #d63c00;
+        input[type="number"] {
+            -moz-appearance: textfield;
         }
 
-        .custom-navbar .mypage-btn {
-            color: var(--primary-color);
-            background: none;
+        body {
+            font-family: 'Noto Sans KR', Arial, Helvetica, sans-serif;
         }
-
-        .custom-navbar .logout-btn {
-            color: var(--primary-color);
-            background: none;
-            border: 1px solid var(--primary-color);
-        }
-
-        .custom-navbar .logout-btn:hover {
-            background-color: rgba(46, 139, 87, 0.1);
-        }
-
-
-
-
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<!-- 네비게이션 바 컨테이너 -->
+<div id="navbar-container"></div>
 
-<!-- 네비게이션 바 -->
-<header class="custom-navbar">
-    <div class="navbar-content">
-        <a href="/" class="logo">
-            <span class="logo-icon">🥬</span>
-            <span class="logo-text">배추마켓</span>
-        </a>
-        <div class="nav-buttons" id="auth-buttons">
-            <a href="/login.html" class="nav-btn login-btn">로그인</a>
-            <a href="/register.html" class="nav-btn signup-btn">회원가입</a>
-        </div>
-    </div>
-</header>
-
-
-
-<main class="main">
-<div class="container">
+<!-- 메인 콘텐츠 -->
+<main class="max-w-7xl mx-auto px-4 py-8">
     <!-- 검색 바 -->
-    <div class="search-container d-flex justify-content-center align-items-center">
-        <div class="search-bar d-flex justify-content-center mb-4">
-            <div class="search-input-wrapper d-flex align-items-center" style="max-width: 600px; width: 100%;">
-                <input type="text" id="searchKeyword" class="form-control search-input" placeholder="찾고 싶은 물건을 검색해보세요" style="flex: 1;">
-                <button class="btn search-btn ms-2" onclick="searchPostsWithPrice()" type="button">
-                    <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                </button>
-            </div>
+    <div class="flex justify-center mb-8">
+        <div class="relative w-full max-w-2xl">
+            <input
+                    type="text"
+                    id="searchKeyword"
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    placeholder="찾고 싶은 물건을 검색해보세요"
+            >
+            <button
+                    id="searchButton"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 bg-emerald-600 text-white p-2 rounded-md hover:bg-emerald-700 transition-colors"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
         </div>
     </div>
 
-
-    <div class="filter-bar d-flex flex-wrap align-items-center justify-content-center gap-3 mt-4">
-
-    <!-- 상태 필터 라디오 -->
-        <div class="d-flex align-items-center gap-3">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="postState" id="stateAll" value="" checked>
-                <label class="form-check-label" for="stateAll">전체</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="postState" id="stateSale" value="SALE">
-                <label class="form-check-label" for="stateSale">판매중</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="postState" id="stateSoldOut" value="SOLD_OUT">
-                <label class="form-check-label" for="stateSoldOut">거래종료</label>
-            </div>
+    <!-- 필터 바 -->
+    <div class="flex flex-wrap justify-center items-center gap-4 mb-8">
+        <!-- 상태 필터 라디오 -->
+        <div class="flex items-center gap-4">
+            <label class="flex items-center gap-1.5 cursor-pointer">
+                <input
+                        type="radio"
+                        name="postState"
+                        value=""
+                        checked
+                        class="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
+                >
+                <span>전체</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+                <input
+                        type="radio"
+                        name="postState"
+                        value="SALE"
+                        class="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
+                >
+                <span>판매중</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+                <input
+                        type="radio"
+                        name="postState"
+                        value="SOLD_OUT"
+                        class="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
+                >
+                <span>거래종료</span>
+            </label>
         </div>
 
         <!-- 가격 필터 버튼 -->
-        <div class="btn-group" role="group" aria-label="가격 필터">
-            <button class="btn filter-btn" onclick="filterByPrice(0, 0)">전체</button>
-            <button class="btn filter-btn" onclick="filterByPrice(0, 5000)">5,000원 이하</button>
-            <button class="btn filter-btn" onclick="filterByPrice(0, 10000)">10,000원 이하</button>
-            <button class="btn filter-btn" onclick="filterByPrice(0, 20000)">20,000원 이하</button>
+        <div class="flex gap-1">
+            <button
+                    class="px-3 py-1.5 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors text-sm"
+                    onclick="filterByPrice(0, 0)"
+            >
+                전체
+            </button>
+            <button
+                    class="px-3 py-1.5 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors text-sm"
+                    onclick="filterByPrice(0, 5000)"
+            >
+                5,000원 이하
+            </button>
+            <button
+                    class="px-3 py-1.5 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors text-sm"
+                    onclick="filterByPrice(0, 10000)"
+            >
+                10,000원 이하
+            </button>
+            <button
+                    class="px-3 py-1.5 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors text-sm"
+                    onclick="filterByPrice(0, 20000)"
+            >
+                20,000원 이하
+            </button>
         </div>
 
         <!-- 직접 가격 입력 -->
-        <div class="d-flex align-items-center gap-2">
-            <input type="number" id="minPrice" class="form-control filter-input" placeholder="최소 가격">
+        <div class="flex items-center gap-2">
+            <input
+                    type="number"
+                    id="minPrice"
+                    class="w-24 px-3 py-1.5 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-sm"
+                    placeholder="최소 가격"
+            >
             <span>-</span>
-            <input type="number" id="maxPrice" class="form-control filter-input" placeholder="최대 가격">
-            <button class="btn btn-apply" onclick="applyPriceFilter()">적용</button>
+            <input
+                    type="number"
+                    id="maxPrice"
+                    class="w-24 px-3 py-1.5 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-sm"
+                    placeholder="최대 가격"
+            >
+            <button
+                    class="px-3 py-1.5 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors text-sm"
+                    onclick="applyPriceFilter()"
+            >
+                적용
+            </button>
+        </div>
+        <div id="write-post-button" class="hidden">
+            <a href="/postForm.html"
+               class="px-3 py-1.5 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors text-sm">
+                게시글 등록
+            </a>
         </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="post-list"></div>
+    <!-- 게시글 목록 -->
+    <div id="post-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <!-- 게시글 카드는 JavaScript로 동적 생성됩니다 -->
+    </div>
 
-    <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center" id="pagination"></ul>
-    </nav>
-</div>
+    <!-- 페이지네이션 -->
+    <div class="flex justify-center mt-8">
+        <nav class="inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination" id="pagination">
+            <!-- 페이지네이션은 JavaScript로 동적 생성됩니다 -->
+        </nav>
+    </div>
 </main>
 
-<!-- 푸터 컨테이너 -->
+<!-- 푸터 -->
 <div id="footer-container"></div>
+
 <script>
-
     let currentPage = 0;
+    let totalPages = 0;
 
+    // 페이지 로드 시 게시글 가져오기
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchPosts(currentPage);
+
+        // 검색 버튼 이벤트 리스너
+        document.getElementById('searchButton').addEventListener('click', function() {
+            searchPostsWithPrice();
+        });
+
+        // 검색창 엔터키 이벤트 리스너
+        document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchPostsWithPrice();
+            }
+        });
+    });
+
+    // 게시글 가져오기
     async function fetchPosts(page = 0) {
-        currentPage = page;
-        const response = await fetch(`/api/posts?pageNumber=${page}&pageSize=12`);
-        const result = await response.json();
+        try {
+            currentPage = page;
+            const response = await fetch(`/api/posts?pageNumber=${page}&pageSize=12`);
+            const result = await response.json();
 
-        if (!result.success) {
-            alert("게시글을 불러오지 못했습니다.");
-            return;
+            if (!result.success) {
+                alert("게시글을 불러오지 못했습니다.");
+                renderSamplePosts(); // 샘플 데이터 표시
+                return;
+            }
+
+            const { content, totalPages: pages, number } = result.data;
+            totalPages = pages;
+            renderPosts(content);
+            renderPagination(totalPages, number);
+        } catch (error) {
+            console.error("Error fetching posts:", error);
+            renderSamplePosts(); // 에러 발생 시 샘플 데이터 표시
         }
-
-        const { content, totalPages, number } = result.data;
-        renderPosts(content);
-        renderPagination(totalPages, number);
     }
 
-
+    // 게시글 렌더링
     function renderPosts(posts) {
         const postList = document.getElementById("post-list");
         postList.innerHTML = "";
 
+        if (posts.length === 0) {
+            renderSamplePosts();
+            return;
+        }
+
         posts.forEach(post => {
-            const imageUrl = post.imageUrl || "/images/default_post.jpg";
-            const formattedDate = new Date(post.createdAt).toLocaleString('ko-KR');
-            const stateLabel = getPostStateLabel(post.state); // 상태 텍스트 변환
-
-            const card = `
-                <div class="col">
-                  <a href="/postDetail.html?postId=${post.postId}" class="card-link text-decoration-none text-dark">
-                    <div class="card h-100 shadow-sm border-0 post-card-hover">
-                      <img src="${imageUrl}" class="card-img-top" alt="썸네일" style="height: 200px; object-fit: cover;">
-                      <div class="card-body p-2">
-                        <h6 class="card-title text-truncate mb-1">${post.title}</h6>
-                        <p class="mb-1 fw-bold">${post.price ? post.price.toLocaleString() + '원' : '나눔'}</p>
-                        <p class="mb-1 text-muted small">
-                          🏷️ ${stateLabel} · 조회수 ${post.viewCnt} · ❤️ ${post.likeCnt}
-                        </p>
-                        <small class="text-muted">${formattedDate}</small>
-                      </div>
-                    </div>
-                  </a>
-                </div>`;
-
-            postList.innerHTML += card;
+            const postCard = createPostCard(post);
+            postList.innerHTML += postCard;
         });
     }
 
+    // 게시글 카드 생성
+    function createPostCard(post) {
+        const stateLabel = getPostStateLabel(post.state);
+        const formattedDate = new Date(post.createdAt).toLocaleDateString();
+        const imageUrl = post.imageUrl || '/images/default-post.jpg'; // 기본 이미지 경로 설정
+
+        return `
+    <a href="/postDetail.html?postId=${post.postId}" onclick="handlePostClick(event, ${post.postId})" class="block">
+        <div class="border border-gray-200 rounded-lg overflow-hidden transition-all hover:shadow-md">
+
+            <!-- 썸네일 + 판매중 배지 -->
+            <div class="thumbnail-wrapper">
+              <img src="${post.imageUrl}" alt="썸네일" class="post-thumbnail">
+              <span class="status-badge">${stateLabel}</span>
+            </div>
+
+            <!-- 본문 -->
+            <div class="p-3">
+                <h3 class="text-sm font-medium truncate mb-1">${post.title}</h3>
+                <p class="text-emerald-600 font-bold">
+                    ${post.price ? post.price.toLocaleString() + "원" : "나눔"}
+                </p>
+                <div class="flex items-center text-xs text-gray-500 mt-2">
+                    <span>조회수 ${post.viewCnt || 0}</span>
+                    <span class="mx-1">•</span>
+                    <span>❤️ ${post.likeCnt || 0}</span>
+                    <span class="mx-1">•</span>
+                    <span>${formattedDate}</span>
+                </div>
+            </div>
+
+        </div>
+    </a>
+`;
+
+    }
 
 
+    async function handlePostClick(event, postId) {
+        event.preventDefault();
+
+        const csrfToken = await fetchCsrfToken();
+        if (!csrfToken) {
+            alert("CSRF 토큰이 없어 상세 페이지로 이동하지 않습니다.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/posts/${postId}/view`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': csrfToken
+                }
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.warn("조회수 증가 실패 응답:", errorText);
+            }
+
+
+            // 무조건 상세페이지로 이동
+            window.location.href = `/postDetail.html?postId=${postId}`;
+        } catch (error) {
+            console.error("조회수 증가 요청 실패:", error);
+            window.location.href = `/postDetail.html?postId=${postId}`;
+        }
+
+    }
+
+    // 페이지네이션 렌더링
     function renderPagination(totalPages, currentPage) {
         const pagination = document.getElementById("pagination");
         pagination.innerHTML = "";
 
         for (let i = 0; i < totalPages; i++) {
-            const activeClass = i === currentPage ? "active" : "";
+            const activeClass = i === currentPage ? "z-10 bg-emerald-600 border-emerald-600 text-white" : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50";
             pagination.innerHTML += `
-        <li class="page-item ${activeClass}">
-          <button class="page-link" onclick="fetchPosts(${i})">${i + 1}</button>
-        </li>`;
+                    <button
+                        onclick="fetchPosts(${i})"
+                        class="relative inline-flex items-center px-4 py-2 border ${activeClass}"
+                    >
+                        ${i + 1}
+                    </button>
+                `;
         }
     }
 
-    function renderPaginationWithSearch(totalPages, currentPage, keyword, minPrice = 0, maxPrice = 0, state = "") {
+    // 샘플 페이지네이션 렌더링
+    function renderSamplePagination() {
         const pagination = document.getElementById("pagination");
         pagination.innerHTML = "";
 
-        for (let i = 0; i < totalPages; i++) {
-            const activeClass = i === currentPage ? "active" : "";
+        for (let i = 1; i <= 3; i++) {
+            const activeClass = i === 1 ? "z-10 bg-emerald-600 border-emerald-600 text-white" : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50";
             pagination.innerHTML += `
-        <li class="page-item ${activeClass}">
-          <button class="page-link" onclick="searchPostsWithPrice(${minPrice}, ${maxPrice}, ${i})">${i + 1}</button>
-        </li>`;
+                    <button class="relative inline-flex items-center px-4 py-2 border ${activeClass}">
+                        ${i}
+                    </button>
+                `;
         }
     }
 
-
-
-    function filterByPrice(min, max) {
-        document.getElementById("minPrice").value = min;
-        document.getElementById("maxPrice").value = max;
-        searchPostsWithPrice(min, max);
-    }
-
-    function applyPriceFilter() {
-        const min = parseInt(document.getElementById("minPrice").value) || 0;
-        const max = parseInt(document.getElementById("maxPrice").value) || 0;
-        searchPostsWithPrice(min, max);
-    }
-
+    // 검색 및 가격 필터링
     function searchPostsWithPrice(minPrice = null, maxPrice = null, page = 0) {
         const keyword = document.getElementById("searchKeyword").value.trim();
         const state = getSelectedPostState();
@@ -294,7 +389,6 @@
         }
 
         let url = `/api/posts/search?pageNumber=${page}&pageSize=12`;
-
 
         if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
         if (minPrice !== 0 || maxPrice !== 0) {
@@ -313,11 +407,48 @@
                     renderPaginationWithSearch(totalPages, number, keyword, minPrice, maxPrice, state);
                 } else {
                     alert("검색 결과가 없습니다.");
+                    renderSamplePosts();
                 }
+            })
+            .catch(error => {
+                console.error("Error searching posts:", error);
+                renderSamplePosts();
             });
     }
 
+    // 검색 결과 페이지네이션 렌더링
+    function renderPaginationWithSearch(totalPages, currentPage, keyword, minPrice = 0, maxPrice = 0, state = "") {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
 
+        for (let i = 0; i < totalPages; i++) {
+            const activeClass = i === currentPage ? "z-10 bg-emerald-600 border-emerald-600 text-white" : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50";
+            pagination.innerHTML += `
+                    <button
+                        onclick="searchPostsWithPrice(${minPrice}, ${maxPrice}, ${i})"
+                        class="relative inline-flex items-center px-4 py-2 border ${activeClass}"
+                    >
+                        ${i + 1}
+                    </button>
+                `;
+        }
+    }
+
+    // 가격 필터링
+    function filterByPrice(min, max) {
+        document.getElementById("minPrice").value = min;
+        document.getElementById("maxPrice").value = max;
+        searchPostsWithPrice(min, max);
+    }
+
+    // 가격 필터 적용
+    function applyPriceFilter() {
+        const min = parseInt(document.getElementById("minPrice").value) || 0;
+        const max = parseInt(document.getElementById("maxPrice").value) || 0;
+        searchPostsWithPrice(min, max);
+    }
+
+    // 선택된 게시글 상태 가져오기
     function getSelectedPostState() {
         const selected = document.querySelector('input[name="postState"]:checked');
         return selected ? selected.value : "";
@@ -332,13 +463,18 @@
             default: return '상태없음';
         }
     }
+    document.addEventListener("DOMContentLoaded", async () => {
+        const loggedIn = await isLoggedIn();
 
+        if (loggedIn) {
+            document.getElementById("write-post-button").classList.remove("hidden");
+        } else {
+            document.getElementById("write-post-button").classList.add("hidden");
+        }
+    });
 
-
-    // 초기 로딩
-    fetchPosts(currentPage);
 </script>
+
 <script src="/common/csrf.js"></script>
 <script src="/common/common.js"></script>
-</body>
 </html>
