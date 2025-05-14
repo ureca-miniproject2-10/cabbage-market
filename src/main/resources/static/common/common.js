@@ -174,3 +174,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 100); // 컴포넌트가 로드된 후 이벤트 리스너 추가를 위한 짧은 지연
 });
+
+// 로그인 여부
+async function isLoggedIn() {
+    try {
+        const response = await fetch('/auth/me', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        return response.ok; // 200이면 로그인 상태, 아니면 false
+    } catch (error) {
+        console.error('로그인 상태 확인 실패:', error);
+        return false;
+    }
+}
+

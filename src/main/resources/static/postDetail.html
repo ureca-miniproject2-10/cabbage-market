@@ -1,63 +1,73 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>배추마켓 - 게시글 상세</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/common/styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        .badge-state {
-            font-size: 0.85rem;
-            padding: 4px 10px;
-            border-radius: 12px;
-            background-color: #f0f0f0;
-        }
-        .post-image {
-            max-height: 400px;
-            object-fit: cover;
-        }
-        .chat-input {
-            border-radius: 20px 0 0 20px;
-        }
-        .chat-send {
-            border-radius: 0 20px 20px 0;
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
         }
     </style>
 </head>
-<body>
-<div class="container mt-5">
-    <div class="row">
-        <!-- 이미지 영역 -->
-        <div class="col-md-6">
-            <img id="postImage" src="/images/default_post.jpg" class="img-fluid rounded post-image" alt="게시글 이미지">
+<div id="navbar-container"></div>
+
+<main class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+
+        <!-- 이미지 -->
+        <div>
+            <img id="postImage" src="/images/default_post.jpg" alt="게시글 이미지"
+                 class="w-full max-h-[400px] object-cover rounded-lg border border-gray-200"/>
         </div>
 
-        <!-- 상세 정보 영역 -->
-        <div class="col-md-6">
-            <span id="postState" class="badge-state text-muted mb-2 d-inline-block">상태</span>
-            <h4 id="postTitle" class="fw-bold"></h4>
-            <h5 id="postPrice" class="text-success fw-bold mb-3"></h5>
-            <p id="postContent"></p>
+        <!-- 상세 정보 -->
+        <div class="space-y-4">
+            <span id="postState" class="inline-block bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full">상태</span>
+            <h2 id="postTitle" class="text-2xl font-bold"></h2>
+            <p id="postPrice" class="text-emerald-600 text-xl font-bold"></p>
+            <p id="postContent" class="text-base leading-relaxed text-gray-700"></p>
 
-            <p class="text-muted small">
-                ❤️ <span id="postLike">0</span> · 👁 <span id="postView">0</span>
-            </p>
-            <p class="text-muted small" id="postCreated">날짜</p>
-
-            <div class="d-flex align-items-center mb-3">
-                <img id="userImage" src="/images/default_user.png" alt="유저 이미지" class="rounded-circle me-2" width="40" height="40">
-                <span id="userName" class="fw-semibold">익명</span>
+            <div class="text-sm text-gray-500 space-x-2">
+                <span>❤️ <span id="postLike">0</span></span>
+                <span>조회수 <span id="postView">0</span></span>
             </div>
 
-            <!-- 채팅창 -->
-            <div class="input-group">
-                <input type="text" class="form-control chat-input" id="chatInput" placeholder="채팅을 입력하세요">
-                <button class="btn btn-success chat-send" onclick="sendChat()">전송</button>
+            <div class="text-sm text-gray-400" id="postCreated">날짜</div>
+
+            <!-- 사용자 정보 -->
+            <div class="flex items-center gap-3">
+                <img id="userImage" src="/images/default_user.png" alt="유저 이미지"
+                     class="w-10 h-10 rounded-full border border-gray-300" />
+                <span id="userName" class="font-medium text-gray-800">익명</span>
             </div>
+
+            <!-- 채팅 입력 -->
+            <div class="flex mt-4">
+                <input id="chatInput" type="text" placeholder="댓글을 입력하세요"
+                       class="flex-grow border border-gray-300 px-4 py-2 rounded-l-full focus:outline-none focus:ring-1 focus:ring-emerald-500 text-sm" />
+                <button onclick="sendChat()"
+                        class="bg-emerald-600 text-white px-4 rounded-r-full hover:bg-emerald-700 transition-colors text-sm">
+                    입력
+                </button>
+            </div>
+
+            <div class="mt-6" id="commentSection">
+                <h4 class="text-lg font-semibold mb-2">댓글</h4>
+                <ul id="commentList" class="space-y-3"></ul>
+            </div>
+
         </div>
     </div>
-</div>
+</main>
 
+<!-- 푸터 -->
+<div id="footer-container"></div>
+
+<!-- 스크립트 -->
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const postId = new URLSearchParams(location.search).get("postId");
@@ -78,6 +88,7 @@
                 document.getElementById("postContent").innerText = post.content;
                 document.getElementById("postCreated").innerText = new Date(post.createdAt).toLocaleString();
                 document.getElementById("userName").innerText = post.userSimpleDto?.username || "익명";
+                renderComments(post.comments || []);
             });
     }
 
@@ -90,12 +101,95 @@
         }
     }
 
-    function sendChat() {
-        const message = document.getElementById("chatInput").value;
-        if (!message) return alert("채팅 내용을 입력하세요.");
-        alert("채팅 전송: " + message);
-        document.getElementById("chatInput").value = "";
+    function renderComments(comments) {
+        const commentList = document.getElementById("commentList");
+        commentList.innerHTML = "";
+
+        if (!comments || comments.length === 0) {
+            commentList.innerHTML = `<li class="text-sm text-gray-500">등록된 댓글이 없습니다.</li>`;
+            return;
+        }
+
+        comments.forEach(comment => {
+            const username = comment.user?.name || "익명";
+            const createdAt = new Date(comment.createdAt).toLocaleString();
+
+            const li = document.createElement("li");
+            li.className = "p-3 bg-gray-100 rounded text-sm";
+            li.innerHTML = `
+      <div class="font-medium text-gray-800">${username}</div>
+      <div class="text-gray-700 mt-1">${comment.content}</div>
+      <div class="text-xs text-gray-400 mt-1">${createdAt}</div>
+    `;
+            commentList.appendChild(li);
+        });
     }
+
+
+    async function sendChat() {
+        const message = document.getElementById("chatInput").value.trim();
+        if (!message) return alert("채팅 내용을 입력하세요.");
+
+        const csrfToken = await fetchCsrfToken();
+        if (!csrfToken) return alert("CSRF 토큰이 필요합니다.");
+
+        try {
+            const response = await fetch(`/api/posts/${currentPostId}/comments`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-XSRF-TOKEN": csrfToken
+                },
+                body: JSON.stringify({ content: message })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || "댓글 등록 실패");
+            }
+
+            document.getElementById("chatInput").value = "";
+
+            // 댓글 포함 전체 게시글 다시 불러오기
+            fetchPostDetail(currentPostId);
+
+            const result = await response.json();
+            const newComment = result.data;
+
+            // 기존 목록에 append (선택) 또는 새로 전체 fetch
+            const commentList = document.getElementById("commentList");
+
+            const li = document.createElement("li");
+            li.className = "p-3 bg-gray-100 rounded text-sm";
+            li.innerHTML = `
+      <div class="font-medium text-gray-800">${newComment.username || "익명"}</div>
+      <div class="text-gray-700 mt-1">${newComment.content}</div>
+      <div class="text-xs text-gray-400 mt-1">${new Date(newComment.createdAt).toLocaleString()}</div>
+    `;
+            commentList.appendChild(li);
+
+            // 입력창 초기화
+            document.getElementById("chatInput").value = "";
+
+        } catch (err) {
+            console.error("댓글 등록 에러:", err);
+            alert("댓글 등록에 실패했습니다.");
+        }
+    }
+
+
+    let currentPostId = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        currentPostId = new URLSearchParams(location.search).get("postId");
+        if (currentPostId) {
+            fetchPostDetail(currentPostId);
+        }
+    });
+
 </script>
-</body>
+
+<script src="/common/csrf.js"></script>
+<script src="/common/common.js"></script>
 </html>

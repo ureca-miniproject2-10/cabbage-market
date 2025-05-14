@@ -96,6 +96,7 @@ public class SecurityConfig {
                                         "/api/reports/**",
                                         "/api/posts/*/view", // 조회수 증가
                                         "/posts.html", // 게시글 페이지
+                                        "/postDetail.html", // 게시글 상세 페이지
                                         "/images/**", // 디폴트 이미지
                                         "/navbar.html"
 
