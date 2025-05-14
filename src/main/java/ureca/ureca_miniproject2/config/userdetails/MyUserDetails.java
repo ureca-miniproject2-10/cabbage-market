@@ -1,4 +1,4 @@
-package ureca.ureca_miniproject2.config;
+package ureca.ureca_miniproject2.config.userdetails;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +18,10 @@ public class MyUserDetails implements UserDetails {
     private final Integer userId;
     private final String username;
     private final String password;
+
+    @Getter
+    private final String profileImageUrl;
+
     private final Collection<? extends GrantedAuthority> authorities;
 
     @Override public String getUsername() { return username; }

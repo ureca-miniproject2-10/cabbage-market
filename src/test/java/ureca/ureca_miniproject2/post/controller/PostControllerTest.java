@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import ureca.ureca_miniproject2.comment.dto.UserSimpleDto;
-import ureca.ureca_miniproject2.config.MyUserDetails;
+import ureca.ureca_miniproject2.config.userdetails.MyUserDetails;
 import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
 import ureca.ureca_miniproject2.post.dto.PostUpdateRequest;
 import ureca.ureca_miniproject2.post.entity.PostState;

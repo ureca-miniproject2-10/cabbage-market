@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import ureca.ureca_miniproject2.config.MyUserDetails;
+import ureca.ureca_miniproject2.config.userdetails.MyUserDetails;
 import ureca.ureca_miniproject2.like.service.LikeService;
 import ureca.ureca_miniproject2.util.exception.custom.UnAuthorizedException;
 import ureca.ureca_miniproject2.util.response.ApiResponse;
