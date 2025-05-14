@@ -4,176 +4,131 @@
     <meta charset="UTF-8">
     <title>게시글 목록</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/common/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* 기본 스타일 */
-        :root {
-            --primary-color: #2E8B57; /* 초록색 (SeaGreen) */
-            --primary-light: #3CB371; /* 연한 초록색 (MediumSeaGreen) */
-            --primary-dark: #006400; /* 진한 초록색 (DarkGreen) */
-            --text-color: #212529;
-            --text-light: #495057;
-            --bg-color: #fff;
-            --bg-light: #f8f9fa;
-            --border-color: #e9ecef;
-        }
-        body {
-            padding-top: 80px;
-            padding-bottom: 40px;
-            overflow-x: hidden;
+        /* Bootstrap과 충돌 피하기 위해 custom-navbar로 분리 */
+        .custom-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .post-card-hover {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            cursor: pointer;
-            border-radius: 10px;
+        .custom-navbar .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+            padding: 0 24px;
         }
 
-        .post-card-hover:hover {
-            transform: scale(1.03);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        }
-        .post-card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
+        .custom-navbar .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
         }
 
-        .card {
-            width: 100%;
-            min-width: 0;
-        }
-        .post-card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-        }
-        /* 페이지네이션 */
-        .pagination .page-item .page-link {
-            border: 1px solid #198754;
-            color: #198754;
-            border-radius: 50px;
-            margin: 0 4px;
-            padding: 6px 14px;
-            transition: all 0.2s;
+        .custom-navbar .logo-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 8px;
         }
 
-        .pagination .page-item .page-link:hover {
-            background-color: #198754;
-            color: #fff;
-        }
-
-        .pagination .page-item.active .page-link {
-            background-color: #198754;
-            color: #fff;
-            border-color: #198754;
-        }
-
-        /* 검색 바 */
-        .search-bar {
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 16px;
-        }
-
-        .search-input-wrapper {
-            position: relative;
-            width: 100%;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--primary-color);
-            border-radius: 9999px;
-            outline: none;
-            font-size: 16px;
-        }
-
-        .search-input:focus {
-            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2);
-        }
-
-        .search-btn {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
+        .custom-navbar .logo-text {
+            font-size: 24px;
+            font-weight: 700;
             color: var(--primary-color);
+        }
+
+        /* 오른쪽 사용자 + 버튼 정렬 */
+        .custom-navbar .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* 사용자 정보 */
+        .custom-navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-right: 8px;
+        }
+
+        .custom-navbar .profile-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--primary-color);
+        }
+
+        .custom-navbar .username {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* 버튼 스타일 */
+        .custom-navbar .nav-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-size: 14px;
+            border: none;
             cursor: pointer;
         }
 
-        .search-btn:hover {
-            color: var(--primary-dark);
+        .custom-navbar .admin-btn {
+            background-color: #ff4500;
+            color: #fff;
         }
 
-        .search-icon {
-            width: 20px;
-            height: 20px;
-        }
-        .filter-bar {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-bottom: 1.5rem;
+        .custom-navbar .admin-btn:hover {
+            background-color: #d63c00;
         }
 
-        .filter-btn {
-            border: 1px solid #198754;
-            color: #198754;
-            background-color: white;
-            border-radius: 20px;
-            padding: 5px 15px;
-            transition: all 0.2s;
+        .custom-navbar .mypage-btn {
+            color: var(--primary-color);
+            background: none;
         }
 
-        .filter-btn:hover,
-        .filter-btn.active {
-            background-color: #198754;
-            color: white;
+        .custom-navbar .logout-btn {
+            color: var(--primary-color);
+            background: none;
+            border: 1px solid var(--primary-color);
         }
 
-        .filter-input {
-            border-radius: 20px;
-            border: 1px solid #198754;
-            padding: 5px 12px;
-            width: 100px;
+        .custom-navbar .logout-btn:hover {
+            background-color: rgba(46, 139, 87, 0.1);
         }
 
-        .btn-apply {
-            background-color: #198754;
-            color: white;
-            border-radius: 20px;
-            padding: 5px 12px;
-            border: none;
-        }
 
-        .form-check-input:checked {
-            background-color: #198754;
-            border-color: #198754;
-        }
 
-        .form-check-label {
-            font-weight: 500;
-        }
+
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg bg-white shadow fixed-top">
-    <div class="container">
-        <a class="navbar-brand fw-bold text-primary" href="/" style="font-size: 1.5rem;">🥬 배추마켓</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
 
-        <div class="collapse navbar-collapse" id="navbarContent">
+<!-- 네비게이션 바 -->
+<header class="custom-navbar">
+    <div class="navbar-content">
+        <a href="/" class="logo">
+            <span class="logo-icon">🥬</span>
+            <span class="logo-text">배추마켓</span>
+        </a>
+        <div class="nav-buttons" id="auth-buttons">
+            <a href="/login.html" class="nav-btn login-btn">로그인</a>
+            <a href="/register.html" class="nav-btn signup-btn">회원가입</a>
         </div>
     </div>
-</nav>
+</header>
 
 
-<div class="container mt-5">
+
+<main class="main">
+<div class="container">
     <!-- 검색 바 -->
     <div class="search-container d-flex justify-content-center align-items-center">
         <div class="search-bar d-flex justify-content-center mb-4">
@@ -190,8 +145,9 @@
     </div>
 
 
-    <div class="filter-bar container d-flex flex-wrap align-items-center justify-content-center gap-3 mt-4">
-        <!-- 상태 필터 라디오 -->
+    <div class="filter-bar d-flex flex-wrap align-items-center justify-content-center gap-3 mt-4">
+
+    <!-- 상태 필터 라디오 -->
         <div class="d-flex align-items-center gap-3">
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="postState" id="stateAll" value="" checked>
@@ -224,17 +180,16 @@
         </div>
     </div>
 
-
-
-
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="post-list"></div>
 
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
 </div>
+</main>
 
-
+<!-- 푸터 컨테이너 -->
+<div id="footer-container"></div>
 <script>
 
     let currentPage = 0;
@@ -383,5 +338,7 @@
     // 초기 로딩
     fetchPosts(currentPage);
 </script>
+<script src="/common/csrf.js"></script>
+<script src="/common/common.js"></script>
 </body>
 </html>
