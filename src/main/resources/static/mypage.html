@@ -354,6 +354,34 @@
             animation: spin 1s linear infinite;
         }
 
+        /* 기본 이미지 버튼 스타일 */
+        .reset-image-btn {
+            padding: 10px 16px;
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: auto;
+        }
+
+        .reset-image-btn:hover {
+            background-color: #e9ecef;
+        }
+
+        .modal-buttons-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .modal-action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -443,9 +471,12 @@
                 <p class="image-upload-text">또는 이미지를 여기에 끌어다 놓으세요</p>
             </div>
             <input type="file" id="file-input" class="file-input" accept="image/*">
-            <div class="modal-buttons">
-                <button type="button" id="image-cancel-btn" class="modal-cancel-btn">취소</button>
-                <button type="submit" class="modal-save-btn">저장</button>
+            <div class="modal-buttons-container">
+                <button type="button" id="reset-image-btn" class="reset-image-btn">기본 이미지로 변경</button>
+                <div class="modal-action-buttons">
+                    <button type="button" id="image-cancel-btn" class="modal-cancel-btn">취소</button>
+                    <button type="submit" class="modal-save-btn">저장</button>
+                </div>
             </div>
         </form>
     </div>
@@ -502,7 +533,7 @@
         if (data.profileImageUrl) {
             profileImage.src = data.profileImageUrl;
         } else {
-            profileImage.src = '/placeholder.svg?height=120&width=120';
+            profileImage.src = '/images/default_user.png?height=120&width=120';
         }
 
         // 프로필 수정 모달의 기본값 설정
@@ -546,17 +577,17 @@
         let stateText = '';
 
         switch (post.state) {
-            case 'SELLING':
+            case 'SALE':
                 stateClass = 'selling';
                 stateText = '판매중';
                 break;
-            case 'RESERVED':
+            case 'SOLD_OUT':
                 stateClass = 'reserved';
-                stateText = '예약중';
-                break;
-            case 'SOLD':
-                stateClass = 'sold';
                 stateText = '판매완료';
+                break;
+            case 'RESTRICT':
+                stateClass = 'sold';
+                stateText = '제한됨';
                 break;
             default:
                 stateClass = 'selling';
@@ -572,7 +603,7 @@
 
         postCard.innerHTML = `
         <div style="position: relative;">
-          <img src="${post.imageUrl || '/placeholder.svg?height=150&width=200'}" alt="${post.title}" class="post-image">
+          <img src="${post.imageUrl || '/images/default_post.jpg?height=150&width=200'}" alt="${post.title}" class="post-image">
           <div class="post-state ${stateClass}">${stateText}</div>
         </div>
         <div class="post-info">
@@ -662,6 +693,37 @@
         }
     }
 
+    // 프로필 이미지를 기본 이미지로 변경하는 요청
+    async function resetProfileImage() {
+        try {
+            const csrfToken = await fetchCsrfToken();
+
+            const response = await fetch('/api/users/mypage/profile-image/reset', {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: {
+                    'X-XSRF-TOKEN': csrfToken
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('프로필 이미지 초기화에 실패했습니다.');
+            }
+
+            const result = await response.json();
+            alert('프로필 이미지가 기본 이미지로 변경되었습니다.');
+
+            // 프로필 정보 업데이트
+            updateProfileInfo(result.data);
+
+            // 모달 닫기
+            closeModal('image-upload-modal');
+        } catch (error) {
+            console.error('프로필 이미지 초기화 오류:', error);
+            alert('프로필 이미지 초기화에 실패했습니다.');
+        }
+    }
+
     // 모달 열기
     function openModal(modalId) {
         document.getElementById(modalId).style.display = 'flex';
@@ -707,6 +769,9 @@
 
         // 프로필 이미지 변경 버튼 클릭 이벤트
         document.getElementById('change-image-btn').addEventListener('click', () => {
+            // 이미지 미리보기 초기화
+            document.getElementById('image-preview').style.display = 'none';
+            document.getElementById('file-input').value = '';
             openModal('image-upload-modal');
         });
 
@@ -787,6 +852,13 @@
             }
 
             await uploadProfileImage(file);
+        });
+
+        // 기본 이미지로 변경 버튼 클릭 이벤트
+        document.getElementById('reset-image-btn').addEventListener('click', async () => {
+            if (confirm('프로필 이미지를 기본 이미지로 변경하시겠습니까?')) {
+                await resetProfileImage();
+            }
         });
     });
 </script>

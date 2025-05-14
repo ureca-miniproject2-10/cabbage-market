@@ -70,4 +70,19 @@ public class MyPageController {
 
         return ApiResponse.success(SuccessMessages.USER_PROFILE_IMAGE_UPDATE, updatedProfile);
     }
+
+    @DeleteMapping("/mypage/profile-image/reset")
+    public ResponseEntity<ApiResponse<MyPageDto>> resetProfileImage(
+            @AuthenticationPrincipal MyUserDetails userDetails) {
+
+        if (userDetails == null) {
+            throw new UnAuthorizedException(UNAUTHORIZED.getMessage());
+        }
+
+        Integer userId = userDetails.getUserId();
+        myPageService.resetToDefaultProfileImage(userId);
+
+        return ApiResponse.success(SuccessMessages.USER_PROFILE_IMAGE_UPDATE);
+    }
+
 }

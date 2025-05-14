@@ -109,4 +109,13 @@ public class MyPageServiceImpl implements MyPageService {
                 postResponses
         );
     }
+
+    @Override
+    @Transactional
+    public void resetToDefaultProfileImage(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        user.updateProfileImageUrl(null); // null로 설정해서 기본 이미지 처리
+    }
 }
