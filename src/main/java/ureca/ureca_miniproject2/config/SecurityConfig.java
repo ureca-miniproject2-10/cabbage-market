@@ -90,6 +90,7 @@ public class SecurityConfig {
                                         "/api/reports/**",
                                         "/api/posts/*/view", // 조회수 증가
                                         "/posts.html", // 게시글 페이지
+                                        "/postDetail.html", // 게시글 상세 페이지
                                         "/images/**" // 디폴트 이미지
 
                                 )
@@ -97,8 +98,8 @@ public class SecurityConfig {
                                 // 관리자 전용 페이지
                                 .requestMatchers("/admin/**", "/admin.html").hasAuthority("ROLE_ADMIN")
                                 // 게시글 조회는 모든 유저 접근 허용
-                                .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
+//                                .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
 
                                 // 좋아요
                                 .requestMatchers(HttpMethod.GET, "/api/likes/**").permitAll()
