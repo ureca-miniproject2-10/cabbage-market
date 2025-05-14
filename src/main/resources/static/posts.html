@@ -46,18 +46,33 @@
             display: block;
         }
 
-        /* 판매중 배지 */
+        /* 상태 배지 기본 스타일 */
         .status-badge {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            background-color: #059669; /* emerald-600 */
-            color: white;
-            font-size: 12px;
+            top: 10px;
+            right: 10px;
             padding: 4px 8px;
-            border-radius: 6px;
-            font-weight: 600;
-            z-index: 10;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+        }
+
+        /* 상태별 색상 */
+        .status-sale {
+            background-color: #2ecc71; /* 초록색 - 판매중 */
+        }
+
+        .status-sold {
+            background-color: #7f8c8d; /* 회색 - 거래종료 */
+        }
+
+        .status-restrict {
+            background-color: #e74c3c; /* 빨간색 - 거래제한 */
+        }
+
+        .status-default {
+            background-color: #95a5a6; /* 기본 회색 */
         }
 
         /* 커스텀 스타일 */
@@ -261,7 +276,11 @@
         postList.innerHTML = "";
 
         if (posts.length === 0) {
-            renderSamplePosts();
+            postList.innerHTML = `
+            <div class="col-span-full text-center text-gray-500 text-lg py-12">
+                게시글이 없습니다.
+            </div>
+        `;
             return;
         }
 
@@ -271,11 +290,10 @@
         });
     }
 
-    // 게시글 카드 생성
     function createPostCard(post) {
-        const stateLabel = getPostStateLabel(post.state);
+        const { label, colorClass } = getPostStateInfo(post.state);
         const formattedDate = new Date(post.createdAt).toLocaleDateString();
-        const imageUrl = post.imageUrl || '/images/default-post.jpg'; // 기본 이미지 경로 설정
+        const imageUrl = post.imageUrl || '/images/default_post.jpg'; // 기본 이미지 경로 설정
 
         return `
     <a href="/postDetail.html?postId=${post.postId}" onclick="handlePostClick(event, ${post.postId})" class="block">
@@ -283,8 +301,8 @@
 
             <!-- 썸네일 + 판매중 배지 -->
             <div class="thumbnail-wrapper">
-              <img src="${post.imageUrl}" alt="썸네일" class="post-thumbnail">
-              <span class="status-badge">${stateLabel}</span>
+              <img src="${imageUrl}" alt="썸네일" class="post-thumbnail">
+              <span class="status-badge ${colorClass}">${label}</span>
             </div>
 
             <!-- 본문 -->
@@ -305,7 +323,6 @@
         </div>
     </a>
 `;
-
     }
 
 
@@ -455,12 +472,28 @@
     }
 
     // 상태 라벨 변환
-    function getPostStateLabel(state) {
+    function getPostStateInfo(state) {
         switch (state) {
-            case 'SALE': return '판매중';
-            case 'SOLD_OUT': return '거래종료';
-            case 'RESTRICT': return '거래제한';
-            default: return '상태없음';
+            case 'SALE':
+                return {
+                    label: '판매중',
+                    colorClass: 'status-sale'
+                };
+            case 'SOLD_OUT':
+                return {
+                    label: '거래종료',
+                    colorClass: 'status-sold'
+                };
+            case 'RESTRICT':
+                return {
+                    label: '거래제한',
+                    colorClass: 'status-restrict'
+                };
+            default:
+                return {
+                    label: '상태없음',
+                    colorClass: 'status-default'
+                };
         }
     }
     document.addEventListener("DOMContentLoaded", async () => {
