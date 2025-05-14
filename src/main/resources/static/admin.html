@@ -1018,14 +1018,14 @@
     // 게시글 보기 버튼 이벤트 리스너
     document.getElementById('view-post-btn').addEventListener('click', () => {
       if (currentPostId) {
-        window.open(`/post-detail.html?id=${currentPostId}`, '_blank');
+        window.open(`/postDetail.html?postId=${currentPostId}`, '_blank');
       }
     });
 
     // 신고된 게시글 보기 버튼 이벤트 리스너
     document.getElementById('view-reported-post-btn').addEventListener('click', () => {
       if (currentReportPostId) {
-        window.open(`/post-detail.html?id=${currentReportPostId}`, '_blank');
+        window.open(`/postDetail.html?postId=${currentReportPostId}`, '_blank');
       }
     });
   });
