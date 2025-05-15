@@ -206,8 +206,19 @@
         </div>
     </div>
 </div>
-
 <div id="modal-container"></div>
+
+<!-- 모달 -->
+<div id="alertModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-6 text-center">
+        <p id="alertModalMessage" class="mb-6 text-gray-800 text-lg font-medium">모달 메시지</p>
+        <button id="alertModalConfirm" class="bg-emerald-600 text-white px-6 py-2 rounded hover:bg-emerald-700 transition">
+            확인
+        </button>
+    </div>
+</div>
+
+
 
 <!-- 푸터 -->
 <div id="footer-container"></div>
@@ -420,18 +431,21 @@
 
             // 응답 상태 코드 확인
             if (response.status === 307) {
-                // 임시 리다이렉트 - 반성문 제출 페이지로 이동
-                alert("거래가 제한되어 반성문을 제출하셔야 합니다.")
-                window.location.href = `/apology-form.html?postId=${postId}`;
+                showAlertModal("거래가 제한되어 반성문을 제출하셔야 합니다.", function () {
+                    window.location.href = `/apology-form.html?postId=${postId}`;
+                });
                 return;
+
             }
 
             if (response.status === 403) {
-                // 임시 리다이렉트 - 반성문 제출 페이지로 이동
-                alert("거래제한된 게시글에는 접근할 수 없습니다.")
-                window.location.href = `/posts.html`;
+                showAlertModal("거래제한된 게시글에는 접근할 수 없습니다.", function () {
+                    window.location.href = "/posts.html";
+                });
                 return;
+
             }
+
 
             // 응답 메시지 확인 - 반성문 제출이 필요한 경우
             if (response.message === "이 게시글은 제한 상태입니다. 반성문을 제출해주세요.") {
@@ -763,6 +777,27 @@
         .then(html => {
             document.getElementById('modal-container').innerHTML = html;
         });
+
+    function showAlertModal(message, onConfirm) {
+        const modal = document.getElementById("alertModal");
+        const modalMessage = document.getElementById("alertModalMessage");
+        const confirmButton = document.getElementById("alertModalConfirm");
+
+        modalMessage.textContent = message;
+        modal.classList.remove("hidden");
+
+        confirmButton.onclick = null;
+        confirmButton.onclick = function () {
+            modal.classList.add("hidden");
+            if (typeof onConfirm === "function") {
+                onConfirm();
+            }
+        };
+    }
+
+
+
+
 </script>
 
 <script src="/common/csrf.js"></script>
