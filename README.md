@@ -1,5 +1,6 @@
 <div align="center">
-  <h1>배추 마켓 (CABBAGE MARKET)</h1>
+  <img src="/readme_assets/cm_banner.png" alt="CABBAGE MARKET" />
+  <h1>배추마켓 (CABBAGE-MARKET)</h1>
 </div>
 
 ## 목차
