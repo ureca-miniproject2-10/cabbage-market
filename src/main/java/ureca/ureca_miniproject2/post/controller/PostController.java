@@ -152,4 +152,6 @@ public class PostController {
         Page<PostResponse> postPage = postService.searchPostsByTitle(safeKeyword, pageNumber, pageSize, minPrice, maxPrice, state);
         return ApiResponse.success(SuccessMessages.POST_FIND_ALL, postPage);
     }
+
+
 }
