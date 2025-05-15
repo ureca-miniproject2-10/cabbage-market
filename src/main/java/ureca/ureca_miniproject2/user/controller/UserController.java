@@ -32,13 +32,6 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
-    // 사용자 등록 -> loginController로 옮김
-//    @PostMapping
-//    public ResponseEntity<UserDto> registerUser(@RequestBody UserRequestDto userRequestDto) {
-//        UserDto dto = userService.registerUser(userRequestDto);
-//        return ResponseEntity.ok(dto);
-//    }
-
 
     // 사용자 수정
     @PutMapping("/{id}")
