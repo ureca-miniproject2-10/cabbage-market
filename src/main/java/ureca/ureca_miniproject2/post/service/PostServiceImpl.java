@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ureca.ureca_miniproject2.like.repository.LikeRepository;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
 import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
 import ureca.ureca_miniproject2.post.dto.PostResponse;
@@ -15,6 +16,7 @@ import ureca.ureca_miniproject2.post.dto.PostUpdateRequest;
 import ureca.ureca_miniproject2.post.entity.Post;
 import ureca.ureca_miniproject2.post.entity.PostState;
 import ureca.ureca_miniproject2.post.repository.PostRepository;
+import ureca.ureca_miniproject2.report.repository.ReportRepository;
 import ureca.ureca_miniproject2.user.entity.User;
 import ureca.ureca_miniproject2.user.repository.UserRepository;
 import ureca.ureca_miniproject2.util.client.ClientIpUtil;
@@ -35,7 +37,10 @@ import static ureca.ureca_miniproject2.util.response.FailureMessages.*;
 public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ReportRepository reportRepository;
+    private final LikeRepository likeRepository;
     private final CacheManager cacheManager;
+
 
     @Override
     public PostDetailResponse createPost(PostCreateRequest request, Integer userId) {
@@ -93,11 +98,18 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
+    @Transactional
     public void deletePost(Integer postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND.getMessage()));
+        // 신고 삭제
+        reportRepository.deleteByPostId(postId);
+        // 좋아요 삭제
+        likeRepository.deleteByPostId(postId);
+        // 그 다음 게시글 삭제
         postRepository.delete(post);
     }
+
 
 
     // 조회수 증가
