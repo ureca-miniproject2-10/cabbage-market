@@ -178,4 +178,5 @@ public class PostController {
         return userDetails.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
+
 }

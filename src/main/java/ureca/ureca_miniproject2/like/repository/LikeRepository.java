@@ -8,4 +8,10 @@ import java.util.Optional;
 
 public interface LikeRepository extends JpaRepository<LikeEntity, LikeEntityKey> {
     Optional<LikeEntity> findByUserIdAndPostId(Integer userId, Integer postId);
+
+    boolean existsByUserIdAndPostId(Integer userId, Integer postId);
+
+    void deleteByPostId(Integer postId);
+
+
 }

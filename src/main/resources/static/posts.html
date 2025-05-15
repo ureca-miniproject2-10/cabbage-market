@@ -499,6 +499,7 @@
                 };
         }
     }
+
     document.addEventListener("DOMContentLoaded", async () => {
         const loggedIn = await isLoggedIn();
         if (loggedIn) {
@@ -518,7 +519,7 @@
                 .then(data => {
                     if (data.success) {
                         const { content, totalPages, number } = data.data;
-                        renderPosts(content); // ✅ 반드시 이 구조
+                        renderPosts(content);
                         renderPaginationWithSearch(totalPages, number, keyword);
                     } else {
                         alert("검색 결과 없음");
