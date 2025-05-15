@@ -193,3 +193,18 @@ async function isLoggedIn() {
     }
 }
 
+// modal.js
+function showModal(message) {
+    const modal = document.getElementById("customModal");
+    const messageBox = document.getElementById("modalMessage");
+    if (modal && messageBox) {
+        messageBox.innerText = message;
+        modal.classList.remove("hidden");
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById("customModal");
+    if (modal) modal.classList.add("hidden");
+}
+

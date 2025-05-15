@@ -108,21 +108,23 @@
     </div>
 </main>
 
-<!-- 삭제 확인 모달 -->
-<div id="deleteModal" class="modal-backdrop">
-    <div class="modal-content">
-        <h3 class="text-lg font-bold mb-4">게시글 삭제</h3>
-        <p class="mb-6">정말로 이 게시글을 삭제하시겠습니까?</p>
-        <div class="flex justify-end space-x-3">
-            <button id="cancelDelete" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors">
-                취소
-            </button>
-            <button id="confirmDelete" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors">
-                삭제
-            </button>
-        </div>
-    </div>
-</div>
+<!--&lt;!&ndash; 삭제 확인 모달 &ndash;&gt;-->
+<!--<div id="deleteModal" class="modal-backdrop">-->
+<!--    <div class="modal-content">-->
+<!--        <h3 class="text-lg font-bold mb-4">게시글 삭제</h3>-->
+<!--        <p class="mb-6">정말로 이 게시글을 삭제하시겠습니까?</p>-->
+<!--        <div class="flex justify-end space-x-3">-->
+<!--            <button id="cancelDelete" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors">-->
+<!--                취소-->
+<!--            </button>-->
+<!--            <button id="confirmDelete" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors">-->
+<!--                삭제-->
+<!--            </button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<div id="modal-container"></div>
 
 <!-- 푸터 -->
 <div id="footer-container"></div>
@@ -161,6 +163,12 @@
         document.getElementById("confirmDelete").addEventListener("click", () => {
             deletePost();
         });
+
+        // 삭제 버튼 클릭 시
+        document.getElementById("deleteButton").addEventListener("click", () => {
+            showModal("정말로 이 게시글을 삭제하시겠습니까?", deletePost, true);
+        });
+
     });
 
     // 현재 로그인한 사용자 정보 가져오기
@@ -243,7 +251,7 @@
             renderComments(post.comments || []);
         } catch (error) {
             console.error("게시글 상세 정보 로드 오류:", error);
-            alert("게시글을 불러오는데 실패했습니다.");
+            showModal("게시글을 불러오는데 실패했습니다.");
         }
     }
 
@@ -301,10 +309,10 @@
 
     async function sendChat() {
         const message = document.getElementById("chatInput").value.trim();
-        if (!message) return alert("채팅 내용을 입력하세요.");
+        if (!message) return showModal("채팅 내용을 입력하세요.");
 
         const csrfToken = await fetchCsrfToken();
-        if (!csrfToken) return alert("CSRF 토큰이 필요합니다.");
+        if (!csrfToken) return showModal("CSRF 토큰이 필요합니다.");
 
         try {
             const response = await fetch(`/api/posts/${currentPostId}/comments`, {
@@ -353,7 +361,7 @@
 
         } catch (err) {
             console.error("댓글 등록 에러:", err);
-            alert("댓글 등록에 실패했습니다.");
+            showModal("로그인 후 이용해주세요.");
         }
     }
 
@@ -374,13 +382,13 @@
                 throw new Error('게시글 삭제에 실패했습니다.');
             }
 
-            alert('게시글이 성공적으로 삭제되었습니다.');
+            showModal('게시글이 성공적으로 삭제되었습니다.');
 
             // 게시글 목록 페이지로 이동
             window.location.href = '/index.html';
         } catch (error) {
             console.error('게시글 삭제 오류:', error);
-            alert('게시글 삭제에 실패했습니다.');
+            showModal('게시글 삭제에 실패했습니다.');
             document.getElementById("deleteModal").style.display = "none";
         }
     }
@@ -416,7 +424,7 @@
             // 저장 버튼 클릭 시 서버로 PUT 요청
             saveBtn.addEventListener("click", async () => {
                 const newContent = input.value.trim();
-                if (!newContent) return alert("내용을 입력하세요.");
+                if (!newContent) return showModal("내용을 입력하세요.");
 
                 const csrfToken = await fetchCsrfToken();
                 try {
@@ -441,10 +449,10 @@
                     input.replaceWith(newContentDiv);
                     saveBtn.remove();
 
-                    alert("댓글이 수정되었습니다.");
+                    showModal("댓글이 수정되었습니다.");
                 } catch (err) {
                     console.error(err);
-                    alert("댓글 수정에 실패했습니다.");
+                    showModal("댓글 수정에 실패했습니다.");
                     // 복원
                     const restoreDiv = document.createElement("div");
                     restoreDiv.className = "text-gray-700 mt-1 content";
@@ -475,12 +483,14 @@
                 if (!response.ok) throw new Error("댓글 삭제 실패");
 
                 li.remove();
-                alert("댓글이 삭제되었습니다.");
+                showModal("댓글이 삭제되었습니다.");
             } catch (err) {
                 console.error(err);
-                alert("댓글 삭제 실패");
+                showModal("댓글 삭제 실패");
             }
         }
+
+
     });
 
     function renderLikeState(isLiked) {
@@ -512,7 +522,7 @@
 
             } catch (err) {
                 console.error("좋아요 토글 실패:", err);
-                alert("로그인 후 이용해주세요.");
+                showModal("로그인 후 이용해주세요.");
             }
         }
 
@@ -588,13 +598,17 @@
 
             } catch (err) {
                 console.error("좋아요 토글 실패:", err);
-                alert("로그인 후 이용해주세요.");
+                showModal("로그인 후 이용해주세요.");
             }
         });
     });
 
-
-
+    // 메시지용 모달
+    fetch('/common/messagemodal.html')
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('modal-container').innerHTML = html;
+        });
 
 
 </script>
