@@ -36,7 +36,9 @@ public enum SuccessMessages {
     // 반성문 관련 메시지
     APOLOGY_READ(HttpStatus.OK.value(), "반성문 불러오기 성공"),
     APOLOGY_CREATE(HttpStatus.OK.value(), "반성문 제출 성공"),
-    APPEAL_REVIEW(HttpStatus.OK.value(), "반성문 리뷰 성공");
+    APPEAL_REVIEW(HttpStatus.OK.value(), "반성문 리뷰 성공"),
+    REQUIRE_APOLOGY(HttpStatus.TEMPORARY_REDIRECT.value(), "이 게시글은 제한 상태입니다. 반성문을 제출해주세요.");
+
     private final int httpStatus;
     private final String message;
 

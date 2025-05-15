@@ -2,8 +2,6 @@ package ureca.ureca_miniproject2.report.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ureca.ureca_miniproject2.post.entity.Apology;
 import ureca.ureca_miniproject2.post.entity.ApologyState;
@@ -11,6 +9,7 @@ import ureca.ureca_miniproject2.post.entity.Post;
 import ureca.ureca_miniproject2.post.repository.PostRepository;
 import ureca.ureca_miniproject2.report.dto.ApologyResponse;
 import ureca.ureca_miniproject2.report.repository.ApologyRepository;
+import ureca.ureca_miniproject2.report.repository.ReportRepository;
 import ureca.ureca_miniproject2.util.exception.custom.ForbiddenException;
 import ureca.ureca_miniproject2.util.exception.custom.NotFoundException;
 
@@ -25,6 +24,7 @@ import static ureca.ureca_miniproject2.util.response.FailureMessages.*;
 public class ApologyService {
     private final PostRepository postRepository;
     private final ApologyRepository apologyRepository;
+    private final ReportRepository reportRepository;
 
     @Transactional
     public void submitApology(Integer postId, String content, Integer userId) {
@@ -36,10 +36,11 @@ public class ApologyService {
             throw new ForbiddenException(APOLOGY_FORBIDDEN.getMessage());
         }
 
-        // 이미 반성문이 제출된 경우 확인
-        Optional<Apology> existingLetter = apologyRepository.findByPostPostId(post.getPostId());
+
+        Optional<Apology> existingLetter = apologyRepository.findByPostPostIdAndState(post.getPostId(), ApologyState.PENDING);
+
         if (existingLetter.isPresent()) {
-            throw new IllegalStateException("이미 반성문이 제출되었습니다.");
+            throw new IllegalStateException("이미 검토 중인 반성문이 있습니다. 관리자의 검토 결과를 기다려주세요.");
         }
 
         // 반성문 생성 및 저장
@@ -62,17 +63,24 @@ public class ApologyService {
             throw new IllegalStateException("이미 처리된 반성문입니다. 현재 상태: " + apology.getState().getState());
         }
 
+        Post post = apology.getPost();
+
         if (isAccepted) {
-            apology.accept();
-            // 게시글 제한 해제
-            Post post = apology.getPost();
+            // 게시글 제한 해제 및 신고 관련 데이터 초기화
             post.unrestrict();
+            post.resetReportCount();
+
+            // 게시글에 연관된 모든 신고 기록 삭제
+            reportRepository.deleteAllByPost(post);
+
+            // 승인된 반성문 삭제
+            apologyRepository.delete(apology);
+
             postRepository.save(post);
         } else {
             apology.reject();
+            apologyRepository.save(apology);
         }
-
-        apologyRepository.save(apology);
     }
 
     @Transactional
@@ -81,7 +89,11 @@ public class ApologyService {
         return apologies.stream().map(ApologyResponse::from).toList();
     }
 
-    public Optional<Apology> getApologyById(Integer id) {
-        return apologyRepository.findById(id);
+    @Transactional
+    public ApologyResponse getApologyById(Integer id) {
+        Apology apology = apologyRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반성문입니다."));
+
+        return ApologyResponse.from(apology);
     }
 }

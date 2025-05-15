@@ -685,7 +685,7 @@
               statusClass = 'status-pending';
               statusText = '검토중';
               break;
-            case 'APPROVED':
+            case 'ACCEPTED':
               statusClass = 'status-approved';
               statusText = '승인됨';
               break;
@@ -811,6 +811,9 @@
       const result = await response.json();
       const apology = result.data;
 
+      // 현재 반성문 ID 저장 (버튼 표시 여부와 관계없이 먼저 저장)
+      currentApologyId = apology.id;
+
       // 모달에 데이터 채우기
       document.getElementById('apology-id').textContent = apology.id;
       document.getElementById('apology-post-id').textContent = apology.postId;
@@ -822,35 +825,26 @@
       const formattedDate = `${createdDate.getFullYear()}.${(createdDate.getMonth() + 1).toString().padStart(2, '0')}.${createdDate.getDate().toString().padStart(2, '0')} ${createdDate.getHours().toString().padStart(2, '0')}:${createdDate.getMinutes().toString().padStart(2, '0')}`;
       document.getElementById('apology-created-at').textContent = formattedDate;
 
-      // 상태에 따른 텍스트 결정
-      let statusText = '';
-      switch (apology.state) {
-        case 'PENDING':
-          statusText = '검토중';
-          break;
-        case 'APPROVED':
-          statusText = '승인됨';
-          break;
-        case 'REJECTED':
-          statusText = '거절됨';
-          break;
-        default:
-          statusText = '검토중';
-      }
-      document.getElementById('apology-state').textContent = statusText;
+      // 상태에 따른 텍스트 설정 - 서버에서 이미 한글로 상태를 반환하고 있으므로 그대로 사용
+      document.getElementById('apology-state').textContent = apology.state;
 
       document.getElementById('apology-content').textContent = apology.content;
 
       // 액션 버튼 표시 여부 결정
       const actionsContainer = document.getElementById('apology-actions');
-      if (apology.state === 'PENDING') {
-        actionsContainer.style.display = 'flex';
 
-        // 현재 반성문 ID 저장
-        currentApologyId = apology.id;
+      // 서버에서 '검토중' 상태일 때만 버튼 표시, 그 외에는 숨김
+      if (apology.state === '검토중') {
+        actionsContainer.style.display = 'flex';
+        console.log('반성문 상태: 검토중 - 액션 버튼 표시');
       } else {
         actionsContainer.style.display = 'none';
+        console.log('반성문 상태:', apology.state, '- 액션 버튼 숨김');
       }
+
+      // 디버깅을 위한 로그 추가
+      console.log('반성문 데이터:', apology);
+      console.log('currentApologyId:', currentApologyId);
 
       // 모달 열기
       openModal('apology-modal');
@@ -901,13 +895,13 @@
     // 상태에 따른 텍스트 결정
     let stateText = '';
     switch (post.state) {
-      case 'SELLING':
+      case 'SALE':
         stateText = '판매중';
         break;
-      case 'RESERVED':
-        stateText = '예약중';
+      case 'RESTRICT':
+        stateText = '거래제한';
         break;
-      case 'SOLD':
+      case 'SOLD_OUT':
         stateText = '판매완료';
         break;
       default:

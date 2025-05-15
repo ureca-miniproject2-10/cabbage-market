@@ -31,6 +31,9 @@ public enum FailureMessages {
     // 반성문 관련 메시지
     APOLOGY_NOT_FOUND("반성문을 찾을 수 없습니다."),
     APOLOGY_FORBIDDEN("게시글 작성자만 반성문을 제출할 수 있습니다."),
+    ACCESS_DENY("제한된 게시글에 접근할 수 없습니다."),
+    UPDATE_DENY("제한된 게시글은 수정할 수 없습니다. 반성문을 제출해주세요."),
+
 
     // 신고 관련 메시지
     REPORT_DUPLICATED("이미 신고한 게시글입니다.");

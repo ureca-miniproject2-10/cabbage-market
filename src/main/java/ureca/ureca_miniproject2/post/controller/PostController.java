@@ -41,8 +41,24 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostDetailResponse>> findPost(@PathVariable("postId") Integer postId) {
-        return ApiResponse.success(SuccessMessages.POST_FIND, postService.getPost(postId));
+    public ResponseEntity<ApiResponse<PostDetailResponse>> findPost(@PathVariable("postId") Integer postId, @AuthenticationPrincipal MyUserDetails userDetails) {
+
+        PostDetailResponse post = postService.getPost(postId);
+
+        // 제한된 게시글 처리
+        if (post.state() == PostState.RESTRICT) {
+            // 작성자가 아닌 경우 접근 거부
+            if (userDetails == null || !hasAdminRole(userDetails) && !post.userSimpleDto().userId().equals(userDetails.getUserId())) {
+                throw new ForbiddenException(ACCESS_DENY.getMessage());
+            }
+
+            // 작성자인 경우 반성문 제출 안내 메시지 반환
+            if(!hasAdminRole(userDetails) && post.userSimpleDto().userId().equals(userDetails.getUserId()))
+                return ApiResponse.success(SuccessMessages.REQUIRE_APOLOGY);
+        }
+
+        // 일반 게시글은 기존대로 처리
+        return ApiResponse.success(SuccessMessages.POST_FIND, post);
     }
 
 
@@ -78,10 +94,15 @@ public class PostController {
             @RequestPart(value = "image", required = false) MultipartFile image,
             @AuthenticationPrincipal MyUserDetails userDetails) throws IOException {
 
-
         PostDetailResponse post = postService.getPost(postId);
+
         if (!isPostAuthor(post, userDetails.getUserId())) {
             throw new ForbiddenException(POST_FORBIDDEN.getMessage());
+        }
+
+        // 제한된 게시글은 수정 불가
+        if (post.state() == PostState.RESTRICT) {
+            throw new ForbiddenException(UPDATE_DENY.getMessage());
         }
 
         String imageUrl = request.imageUrl();
@@ -151,5 +172,10 @@ public class PostController {
         String safeKeyword = (keyword != null) ? keyword : "";
         Page<PostResponse> postPage = postService.searchPostsByTitle(safeKeyword, pageNumber, pageSize, minPrice, maxPrice, state);
         return ApiResponse.success(SuccessMessages.POST_FIND_ALL, postPage);
+    }
+
+    private boolean hasAdminRole(MyUserDetails userDetails) {
+        return userDetails.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
 }

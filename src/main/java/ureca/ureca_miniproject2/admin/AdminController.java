@@ -50,11 +50,8 @@ public class AdminController {
     // 반성문 상세 조회
     @GetMapping("/apologies/{id}")
     public ResponseEntity<ApiResponse<ApologyResponse>> getApology(@PathVariable("id") Integer id) {
-        Apology apology = apologyService.getApologyById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반성문입니다."));
-
-        ApologyResponse responseDto = ApologyResponse.from(apology);
-        return ApiResponse.success(SuccessMessages.APOLOGY_READ, responseDto);
+        ApologyResponse apologyById = apologyService.getApologyById(id);
+        return ApiResponse.success(SuccessMessages.APOLOGY_READ, apologyById);
     }
 
 

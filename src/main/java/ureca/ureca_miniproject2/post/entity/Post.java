@@ -76,4 +76,8 @@ public class Post {
     public void incrementView() {
         this.viewCnt++;
     }
+
+    public void resetReportCount() {
+        this.reportCnt = 0;
+    }
 }
