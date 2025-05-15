@@ -71,20 +71,33 @@ a {
 
 
 .logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid #dcfce7;
+    transition: all 0.2s ease;
+    font-size: large;
+}
+
+.logo:hover {
+    background-color: #dcfce7;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .logo-icon {
-    width: 32px;
-    height: 32px;
-    margin-right: 8px;
+    font-size: 20px;
+    line-height: 1;
 }
 
 .logo-text {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 700;
-    color: var(--primary-color);
+    color: #16a34a;
+    letter-spacing: -0.5px;
+    line-height: 1;
 }
 
 .nav-buttons {
