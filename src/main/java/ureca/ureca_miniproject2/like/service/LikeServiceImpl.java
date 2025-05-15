@@ -24,10 +24,13 @@ public class LikeServiceImpl implements LikeService {
     @Transactional
     public boolean toggleLike(Integer userId, Integer postId) {
         LikeEntityKey likeKey = new LikeEntityKey(userId, postId);
+
+        Post post = postRepository.findByIdWithPessimisticLock(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
         LikeEntity likeEntity = likeRepository.findById(likeKey).orElse(null);
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
 
         if (likeEntity == null) {
             // 좋아요 추가
@@ -36,16 +39,14 @@ public class LikeServiceImpl implements LikeService {
             LikeEntity newLike = new LikeEntity(user, post);
             likeRepository.save(newLike);
             post.incrementLike();
-            postRepository.save(post);
+
             return true; // 좋아요된 상태
         } else {
             // 좋아요 취소
             likeRepository.delete(likeEntity);
             post.decrementLike();
-            postRepository.save(post);
+
             return false; // 좋아요 취소된 상태
         }
     }
-
-
 }
