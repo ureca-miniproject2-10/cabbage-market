@@ -34,6 +34,89 @@
             max-width: 400px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
+        /* 신고 모달 스타일 */
+        #report-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .report-modal-content {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .report-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            resize: vertical;
+        }
+
+        .report-textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+
+        .report-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .report-cancel-btn {
+            padding: 0.5rem 1rem;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .report-cancel-btn:hover {
+            background-color: #e5e7eb;
+        }
+
+        .report-submit-btn {
+            padding: 0.5rem 1rem;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .report-submit-btn:hover {
+            background-color: #dc2626;
+        }
     </style>
 </head>
 <body>
@@ -48,10 +131,13 @@
                 <img id="postImage" src="/images/default_post.jpg" alt="게시글 이미지"
                      class="w-full max-h-[400px] object-cover rounded-lg border border-gray-200"/>
             </div>
-            <!-- 좋아요 버튼 -->
-            <div>
+            <!-- 좋아요 버튼과 신고하기 버튼 -->
+            <div class="flex space-x-2">
                 <button id="likeButton" class="flex items-center gap-1 text-sm px-4 py-2 rounded-full bg-gray-100 hover:bg-red-100 text-gray-700 hover:text-red-600 transition">
                     ❤️ <span id="likeText">좋아요</span>
+                </button>
+                <button id="reportButton" class="flex items-center gap-1 text-sm px-4 py-2 rounded-full bg-gray-100 hover:bg-red-100 text-gray-700 hover:text-red-600 transition">
+                    🚨 <span>신고하기</span>
                 </button>
             </div>
         </div>
@@ -108,21 +194,18 @@
     </div>
 </main>
 
-<!--&lt;!&ndash; 삭제 확인 모달 &ndash;&gt;-->
-<!--<div id="deleteModal" class="modal-backdrop">-->
-<!--    <div class="modal-content">-->
-<!--        <h3 class="text-lg font-bold mb-4">게시글 삭제</h3>-->
-<!--        <p class="mb-6">정말로 이 게시글을 삭제하시겠습니까?</p>-->
-<!--        <div class="flex justify-end space-x-3">-->
-<!--            <button id="cancelDelete" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors">-->
-<!--                취소-->
-<!--            </button>-->
-<!--            <button id="confirmDelete" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors">-->
-<!--                삭제-->
-<!--            </button>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
+<!-- 신고하기 모달 -->
+<div id="report-modal" class="modal-backdrop">
+    <div class="report-modal-content">
+        <h3 class="report-modal-title">게시글 신고하기</h3>
+        <p class="text-sm text-gray-600 mb-4">신고 사유를 자세히 작성해주세요.</p>
+        <textarea id="report-content" class="report-textarea" placeholder="신고 사유를 입력해주세요. (최소 10자 이상)"></textarea>
+        <div class="report-buttons">
+            <button id="report-cancel-btn" class="report-cancel-btn">취소</button>
+            <button id="report-submit-btn" class="report-submit-btn">신고하기</button>
+        </div>
+    </div>
+</div>
 
 <div id="modal-container"></div>
 
@@ -151,25 +234,108 @@
 
         // 삭제 버튼 이벤트 리스너
         document.getElementById("deleteButton").addEventListener("click", () => {
-            document.getElementById("deleteModal").style.display = "flex";
-        });
-
-        // 삭제 취소 버튼
-        document.getElementById("cancelDelete").addEventListener("click", () => {
-            document.getElementById("deleteModal").style.display = "none";
-        });
-
-        // 삭제 확인 버튼
-        document.getElementById("confirmDelete").addEventListener("click", () => {
-            deletePost();
-        });
-
-        // 삭제 버튼 클릭 시
-        document.getElementById("deleteButton").addEventListener("click", () => {
             showModal("정말로 이 게시글을 삭제하시겠습니까?", deletePost, true);
         });
 
+        // 신고하기 버튼 클릭 이벤트
+        document.getElementById("reportButton").addEventListener("click", () => {
+            // 로그인 확인
+            if (!currentUserId) {
+                showModal("로그인 후 이용해주세요.");
+                return;
+            }
+
+            // 자신의 게시글은 신고할 수 없음
+            if (Number(currentUserId) === Number(postAuthorId)) {
+                showModal("자신의 게시글은 신고할 수 없습니다.");
+                return;
+            }
+
+            // 신고 모달 열기
+            openReportModal();
+        });
+
+        // 신고 취소 버튼 클릭 이벤트
+        document.getElementById("report-cancel-btn").addEventListener("click", () => {
+            closeReportModal();
+        });
+
+        // 신고 제출 버튼 클릭 이벤트
+        document.getElementById("report-submit-btn").addEventListener("click", async () => {
+            const reportContent = document.getElementById("report-content").value.trim();
+
+            // 신고 내용 유효성 검사
+            if (reportContent.length < 10) {
+                showModal("신고 사유는 10자 이상 입력해주세요.");
+                return;
+            }
+
+            await submitReport(reportContent);
+        });
+
+        // 좋아요 버튼 클릭 이벤트
+        document.getElementById("likeButton").addEventListener("click", async () => {
+            // 로그인 확인
+            if (!currentUserId) {
+                showModal("로그인 후 이용해주세요.");
+                return;
+            }
+
+            try {
+                const csrfToken = await fetchCsrfToken();
+
+                const response = await fetch(`/api/likes/${currentPostId}`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-XSRF-TOKEN": csrfToken
+                    }
+                });
+
+                if (!response.ok) throw new Error("좋아요 요청 실패");
+
+                const result = await response.json();
+                const isLiked = result.data?.isLiked;
+                const likeCnt = result.data?.likeCnt;
+
+                const likeText = document.getElementById("likeText");
+                const likeBtn = document.getElementById("likeButton");
+                const likeCountDisplay = document.getElementById("postLike");
+
+                // 좋아요 상태 표시
+                if (isLiked) {
+                    likeBtn.classList.add("text-red-500");
+                    likeText.textContent = "좋아요 취소";
+                } else {
+                    likeBtn.classList.remove("text-red-500");
+                    likeText.textContent = "좋아요";
+                }
+
+                if (likeCnt !== undefined) {
+                    likeCountDisplay.innerText = likeCnt;
+                }
+
+            } catch (err) {
+                console.error("좋아요 토글 실패:", err);
+                showModal("좋아요 처리에 실패했습니다.");
+            }
+        });
     });
+
+    // 신고 모달 열기 함수
+    function openReportModal() {
+        const modal = document.getElementById("report-modal");
+        modal.style.display = "flex";
+        document.getElementById("report-content").value = "";
+    }
+
+    // 신고 모달 닫기 함수
+    function closeReportModal() {
+        const modal = document.getElementById("report-modal");
+        modal.style.display = "none";
+        document.getElementById("report-content").value = "";
+    }
 
     // 현재 로그인한 사용자 정보 가져오기
     async function fetchCurrentUser() {
@@ -190,6 +356,45 @@
             }
         } catch (error) {
             console.error("사용자 정보 로드 오류:", error);
+        }
+    }
+
+    // 신고 제출 함수
+    async function submitReport(content) {
+        try {
+            const csrfToken = await fetchCsrfToken();
+
+            const response = await fetch(`/api/reports/${currentPostId}`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ content: content })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                // 이미 신고한 게시물인 경우 특정 메시지 확인
+                if (result.message && result.message.includes("이미 신고한")) {
+                    closeReportModal();
+                    showModal("이미 신고한 게시물입니다.");
+                    return;
+                }
+                throw new Error(result.message || '신고 제출에 실패했습니다.');
+            }
+
+            // 신고 모달 닫기
+            closeReportModal();
+
+            // 성공 메시지 표시
+            showModal("신고가 접수되었습니다. 관리자 검토 후 조치하겠습니다.");
+
+        } catch (error) {
+            console.error('신고 제출 오류:', error);
+            showModal(error.message || '신고 제출에 실패했습니다. 다시 시도해주세요.');
         }
     }
 
@@ -328,11 +533,15 @@
         });
     }
 
-
-
     async function sendChat() {
         const message = document.getElementById("chatInput").value.trim();
         if (!message) return showModal("채팅 내용을 입력하세요.");
+
+        // 로그인 확인
+        if (!currentUserId) {
+            showModal("로그인 후 이용해주세요.");
+            return;
+        }
 
         const csrfToken = await fetchCsrfToken();
         if (!csrfToken) return showModal("CSRF 토큰이 필요합니다.");
@@ -384,7 +593,7 @@
 
         } catch (err) {
             console.error("댓글 등록 에러:", err);
-            showModal("로그인 후 이용해주세요.");
+            showModal("댓글 등록에 실패했습니다.");
         }
     }
 
@@ -412,11 +621,11 @@
         } catch (error) {
             console.error('게시글 삭제 오류:', error);
             showModal('게시글 삭제에 실패했습니다.');
-            document.getElementById("deleteModal").style.display = "none";
         }
     }
 
-    commentList.addEventListener("click", async (e) => {
+    // 댓글 관련 이벤트 처리
+    document.getElementById("commentList").addEventListener("click", async (e) => {
         const li = e.target.closest("li");
         const commentId = li?.dataset?.commentId;
 
@@ -512,43 +721,11 @@
                 showModal("댓글 삭제 실패");
             }
         }
-
-
     });
 
     function renderLikeState(isLiked) {
         const likeBtn = document.getElementById("likeButton");
         const likeText = document.getElementById("likeText");
-
-        async function toggleLike() {
-            try {
-                const csrfToken = await fetchCsrfToken();
-
-                const response = await fetch(`/api/likes/${currentPostId}`, {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-XSRF-TOKEN": csrfToken
-                    }
-                });
-
-                if (!response.ok) throw new Error("좋아요 요청 실패");
-
-                const result = await response.json();
-                const isLiked = result.data?.isLiked;
-                const likeCnt = result.data?.likeCnt;
-
-                renderLikeState(isLiked);
-
-                document.getElementById("postLike").innerText = likeCnt;
-
-            } catch (err) {
-                console.error("좋아요 토글 실패:", err);
-                showModal("로그인 후 이용해주세요.");
-            }
-        }
-
 
         if (isLiked) {
             likeBtn.classList.add("text-red-500");
@@ -558,7 +735,6 @@
             likeText.textContent = "좋아요";
         }
     }
-
 
     async function fetchLikeStatus(postId) {
         try {
@@ -581,59 +757,12 @@
         }
     }
 
-
-    document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById("likeButton").addEventListener("click", async () => {
-            try {
-                const csrfToken = await fetchCsrfToken();
-
-                const response = await fetch(`/api/likes/${currentPostId}`, {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-XSRF-TOKEN": csrfToken
-                    }
-                });
-
-                if (!response.ok) throw new Error("좋아요 요청 실패");
-
-                const result = await response.json();
-                const isLiked = result.data?.isLiked;
-                const likeCnt = result.data?.likeCnt; // ✅ 좋아요 수 추가로 받기
-
-                const likeText = document.getElementById("likeText");
-                const likeBtn = document.getElementById("likeButton");
-                const likeCountDisplay = document.getElementById("postLike"); // ✅ span for count
-
-                // ✅ 좋아요 상태 표시
-                if (isLiked) {
-                    likeBtn.classList.add("text-red-500");
-                    likeText.textContent = "좋아요 취소";
-                } else {
-                    likeBtn.classList.remove("text-red-500");
-                    likeText.textContent = "좋아요";
-                }
-
-                if (likeCnt !== undefined) {
-                    likeCountDisplay.innerText = likeCnt;
-                }
-
-            } catch (err) {
-                console.error("좋아요 토글 실패:", err);
-                showModal("로그인 후 이용해주세요.");
-            }
-        });
-    });
-
     // 메시지용 모달
     fetch('/common/messagemodal.html')
         .then(res => res.text())
         .then(html => {
             document.getElementById('modal-container').innerHTML = html;
         });
-
-
 </script>
 
 <script src="/common/csrf.js"></script>
