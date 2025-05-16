@@ -80,4 +80,7 @@ public class Post {
     public void resetReportCount() {
         this.reportCnt = 0;
     }
+
+    @Version
+    private Integer version;
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ureca.ureca_miniproject2.post.entity.Post;
@@ -36,4 +37,13 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT p from Post p where p.postId = :postId")
     Optional<Post> findByIdWithPessimisticLock(@Param("postId") Integer postId);
+
+    @Modifying
+    @Query("UPDATE Post p SET p.likeCnt = p.likeCnt+ 1 WHERE p.postId = :postId")
+    void incrementLikeCount(@Param("postId") Integer postId);
+
+    @Modifying
+    @Query("UPDATE Post p SET p.likeCnt = p.likeCnt- 1 WHERE p.postId = :postId")
+    void decrementLikeCount(@Param("postId") Integer postId);
+
 }

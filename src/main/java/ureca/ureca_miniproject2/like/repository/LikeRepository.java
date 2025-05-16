@@ -14,4 +14,5 @@ public interface LikeRepository extends JpaRepository<LikeEntity, LikeEntityKey>
     void deleteByPostId(Integer postId);
 
 
+
 }
