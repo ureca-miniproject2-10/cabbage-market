@@ -81,6 +81,6 @@ public class Post {
         this.reportCnt = 0;
     }
 
-    @Version
-    private Integer version;
+//    @Version
+//    private Integer version;
 }
