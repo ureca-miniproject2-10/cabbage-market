@@ -82,21 +82,20 @@
 ## 실행 화면
 
 | 메인화면                     | 게시글 목록 + 검색 필터 화면              |
-|--------------------------|--------------------------------|
-| ![메인](img/ownershop.png~~~~) | ![게시글목록](img/selli~~~ngphone.png) | 
+|:--------------------------:|--------------------------------|
+| <img src = "https://github.com/user-attachments/assets/98108697-6024-40df-a0f1-c22f198e419d" width="500" /> | <img src = "https://github.com/user-attachments/assets/7707cf20-6137-4d5b-89ba-cf8a45adc099" width="500" /> | 
 
 | 게시글 작성 화면                    | 게시글 상세 조회 화면                    |
 |------------------------------|---------------------------------|
-| ![게시글 작성](img/ownershop.png) | ![게시글 상세](img/sellingphone.png) | 
+| <img src = "https://github.com/user-attachments/assets/d261ded2-cbd0-4904-a346-9d34801504d0" width="500" /> | <img src = "https://github.com/user-attachments/assets/69ce1f27-101d-49f7-a2e7-d9b27164dad5" width="500" /> | 
 
 | 반성문 작성 화면                    | 관리자 반성문 승인 화면                  |
 |------------------------------|--------------------------------|
-| ![반성문 작성](img/ownershop.png) | ![관리자 반성문](img/sellingphone.png) | 
+| <img src = "https://github.com/user-attachments/assets/7e9def2c-68c0-42d5-93d6-22a14990752d" width="500" /> | <img src = "https://github.com/user-attachments/assets/b0a4d149-3022-4057-824e-48691f6141dd" width="500" /> | 
 
 | 마이페이지                       | 신고 등록 화면                       |
 |-----------------------------|--------------------------------|
-| ![마이페이지](img/ownershop.png) | ![신고 등록](img/sellingphone.png) | 
-
+| <img src = "https://github.com/user-attachments/assets/03a81537-95ef-4a3d-a4a8-a0af42de9014" width="500" /> | <img src = "https://github.com/user-attachments/assets/3afdc367-922b-463a-9f72-321713acfad1" width="500" /> | 
 
 <div id="5"></div>
 
