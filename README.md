@@ -80,6 +80,9 @@
 
 - ERD
 
+![스크린샷 2025-05-16 오전 10 22 19](https://github.com/user-attachments/assets/132ed29c-e900-4899-9ad1-1c3f451fa4fe)
+
+
 ## 개발 팀 소개
 
 <div id="6"></div>
