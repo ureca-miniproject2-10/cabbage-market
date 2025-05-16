@@ -63,10 +63,6 @@
 |  | GET    | `/posts/search`        | 게시글 검색<br>검색어, 가격 범위, 상태(enum) 등 조건 지원   |
 | Report | POST | `/apologies/{postId}` | 제한된 게시글에 대한 반성문 제출 (최소 100자 이상) |
 | | POST | `/reports/{postId}` | 특정 게시글에 대한 신고 등록 (신고 사유 포함) |
-| User   | GET    | `/users`      | 전체 사용자 목록 조회 |
-|    | GET    | `/users/{id}` | 특정 사용자 상세 조회 |
-|   | PUT    | `/users/{id}` | 사용자 정보 수정    |
-|    | DELETE | `/users/{id}` | 사용자 삭제       |
 | Auth   | POST | `/users/register` | 사용자 회원가입          |
 |   | POST | `/users/logout`   | 로그아웃 (세션 무효화)     |
 |   | GET  | `/users/me`       | 현재 로그인된 사용자 정보 조회 |
