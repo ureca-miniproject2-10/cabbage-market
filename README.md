@@ -11,7 +11,7 @@
 4. [**실행 화면**](#4)
 5. [**프로젝트 구성도**](#5)
 6. [**개발 팀 소개**](#6)
-7. [**개발 기간 및 일정**](#7)
+7. [**개발 기간**](#7)
 
 <div id="1"></div>
 
@@ -23,6 +23,17 @@
 
 ## 기술 스택
 
+### **Front-end**
+
+| <img src="https://profilinator.rishav.dev/skills-assets/html5-original-wordmark.svg" alt="HTML5" width="50px" height="50px" /> | <img src="https://profilinator.rishav.dev/skills-assets/css3-original-wordmark.svg" alt="CSS3" width="50px" height="50px" /> | <img src="https://profilinator.rishav.dev/skills-assets/javascript-original.svg" alt="JavaScript" width="50px" height="50px" /> | 
+| :----------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: |
+|                                                             HTML5                                                              |                                                             CSS3                                                             |                                                         JavaScript                                                         | 
+
+### **Back-end**
+
+| <img src="https://profilinator.rishav.dev/skills-assets/springio-icon.svg" alt="Spring" width="50px" height="50px" /> | <img src="https://profilinator.rishav.dev/skills-assets/mysql-original-wordmark.svg" alt="MySQL" width="50px" height="50px" /> | <img src="https://profilinator.rishav.dev/skills-assets/google_cloud-icon.svg" alt="GCS" width="50px" height="50px" /> |
+| :---------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                         Spring                                                          |                                                         MySQL                                                          |                                                                GCP                                                                |
 
 <div id="3"></div>
 
@@ -113,14 +124,40 @@
 <div id="6"></div>
 
 ## 개발 팀 소개
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Jang-GO">
+        <img src="https://avatars.githubusercontent.com/u/88973153?v=4" alt="장현서 프로필" width = "200"/>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/lbk00">
+        <img src="https://avatars.githubusercontent.com/u/99525751?v=4" alt="이본규 프로필" width = "200"/>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Jang-GO">
+        장현서<br />
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/lbk00">
+        이본규<br />
+      </a>
+    </td>
+  </tr>
+</table>
 
-- 현서: Post/Comment/Admin 도메인 구현, GCS 이미지 업로드 구현, UI 설계
-
-- 본규: User/Like/Report 도메인 구현, Spring Security, 조회수 기능(캐시메모리), UI 설계
-
+|  이름  |   역할    | <div align="center">개발 내용</div>                                                                                                                                                                                                              |
+| :----: | :-------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 장현서 |  Frontend, Backend  | - Post/Comment/Admin 도메인 구현<br />- GCS 이미지 업로드 구현<br />- 좋아요 동시성 해결<br />- UI 설계                                                                                  |
+| 이본규 |  Frontend, Backend  | - User/Like/Report 도메인 구현<br />- Spring Security <br />- 조회수 기능(캐시메모리)<br />- UI 설계                                                                                             |
 
 <div id="7"></div>
 
 ## 개발 기간 및 일정
 
-- 2025.05.08 ~2025.05.16
+- 2025.05.08 ~2025.05.16(1주)
