@@ -149,10 +149,6 @@ public class PostController {
         return ApiResponse.success(SuccessMessages.POST_DELETE);
     }
 
-    private boolean isPostAuthor(PostDetailResponse post, Integer userId) {
-        return post.userSimpleDto().userId().equals(userId);
-    }
-
     @PostMapping("/{postId}/view")
     public ResponseEntity<ApiResponse<Void>> increaseView(@PathVariable("postId") Integer postId, HttpServletRequest request) {
             postService.increaseViewCount(postId, request);
@@ -172,6 +168,10 @@ public class PostController {
         String safeKeyword = (keyword != null) ? keyword : "";
         Page<PostResponse> postPage = postService.searchPostsByTitle(safeKeyword, pageNumber, pageSize, minPrice, maxPrice, state);
         return ApiResponse.success(SuccessMessages.POST_FIND_ALL, postPage);
+    }
+
+    private boolean isPostAuthor(PostDetailResponse post, Integer userId) {
+        return post.userSimpleDto().userId().equals(userId);
     }
 
     private boolean hasAdminRole(MyUserDetails userDetails) {
