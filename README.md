@@ -76,7 +76,7 @@
 
 - SW 아키텍처
 
-
+![스크린샷 2025-05-16 오전 10 20 17](https://github.com/user-attachments/assets/065f5b58-0a4e-410b-96ee-ff5147f377ae)
 
 - ERD
 
