@@ -74,13 +74,25 @@
 
 <div id="5"></div>
 
+- SW 아키텍처
+
+
+
+- ERD
+
 ## 개발 팀 소개
 
 <div id="6"></div>
 
+- 현서: Post/Comment/Admin 도메인 구현, GCS 이미지 업로드 구현, UI 설계
+
+- 본규: User/Like/Report 도메인 구현, Spring Security, 조회수 기능(캐시메모리), UI 설계
+
 ## 개발 기간 및 일정
 
 <div id="7"></div>
+
+- 2025.05.08 ~2025.05.16
 
 ## 실행 방법
 
