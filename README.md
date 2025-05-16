@@ -76,6 +76,8 @@
 |  | DELETE | `/users/mypage/profile-image/reset` | 프로필 이미지를 기본 이미지로 초기화               |
 
 
+
+
 </details>
 <div id="4"></div>
 
@@ -101,11 +103,28 @@
 
 ## 프로젝트 구성도
 
+- SW 아키텍처
+
+![스크린샷 2025-05-16 오전 10 20 17](https://github.com/user-attachments/assets/065f5b58-0a4e-410b-96ee-ff5147f377ae)
+
+- ERD
+
+![스크린샷 2025-05-16 오전 10 22 19](https://github.com/user-attachments/assets/132ed29c-e900-4899-9ad1-1c3f451fa4fe)
+
+
+
+
 <div id="6"></div>
 
 ## 개발 팀 소개
+
+- 현서: Post/Comment/Admin 도메인 구현, GCS 이미지 업로드 구현, UI 설계
+
+- 본규: User/Like/Report 도메인 구현, Spring Security, 조회수 기능(캐시메모리), UI 설계
+
 
 <div id="7"></div>
 
 ## 개발 기간 및 일정
 
+- 2025.05.08 ~2025.05.16

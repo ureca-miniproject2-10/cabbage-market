@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -32,6 +33,23 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private static final String[] WHITE_LIST = {
+            "/", "index.html",
+            "/csrf-token",
+            "/common/**",
+            "/login", "/login.html",
+            "/auth/**", "/register.html",
+            "/error.html",
+            "/posts.html", "/postDetail.html",
+            "/navbar.html",
+            "/images/**",                // 기본 이미지, 정적 파일
+            "/api/posts/*/view",        // 게시글 조회수 증가 API
+            "/api/likes/**",            // 좋아요 상태 조회 (GET)
+            "/api/reports/**",          // 신고 관련 조회 (GET만 열어둘 경우 확인 필요)
+            "/api/posts/**"             // 게시글 전체 조회 API
+    };
+
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // 반드시 설정 필요
@@ -56,7 +74,6 @@ public class SecurityConfig {
         http
                 // CSRF 토큰을 쿠키에 저장 , 클라이언트가 이를 요청에 포함하도록함
                 // ( 상태 변경 메서드 : POST, PUT, PATCH, DELETE 요청에 대해 항상 필요 )
-//                .csrf(csrf->csrf.disable())
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
@@ -77,56 +94,21 @@ public class SecurityConfig {
                 }))
 
                 // 기본 폼 로그인 비활성화 ( 커스텀 로그인, 회원가입 페이지 사용하기 위해 )
-                .formLogin(form -> form.disable())
-                .authorizeHttpRequests( // 인가 (Authorization) 과정 설정
-                        request -> request.
-                                requestMatchers( // 누구나 접근 가능한 경로
-                                "/",
-                                "index.html",
-                                "/csrf-token",
-                                        "/common/**",
-                                        "/login",
-                                "/login.html",
-                                "/auth/**",
-                                "/register.html",
-                                        "/error.html",
-                                        "/api/posts/**",
-                                        "/users/**",
-                                        "/api/likes/**",
-                                        "/api/reports/**",
-                                        "/api/posts/*/view", // 조회수 증가
-                                        "/posts.html", // 게시글 페이지
-                                        "/postDetail.html", // 게시글 상세 페이지
-                                        "/images/**", // 디폴트 이미지
-                                        "/navbar.html"
+//                .formLogin(form -> form.disable())
+                .authorizeHttpRequests(request -> request
+                        // [1] 로그인하지 않아도 접근 가능한 공개 경로 (정적 리소스 + 공개 페이지 + 조회 API)
+                        // 비회원이 할수있는 것들
+                        .requestMatchers(WHITE_LIST).permitAll()
 
-                                )
-                        .permitAll()
-                                // 관리자 전용 페이지
-                                .requestMatchers("/admin/**", "/admin.html").hasAuthority("ROLE_ADMIN")
-                                // 게시글 조회는 모든 유저 접근 허용
-                                .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/posts", "/api/posts/", "/api/posts/**").permitAll()
+                        // 관리자 전용 페이지 및 API
+                        .requestMatchers("/admin/**", "/admin.html", "/api/admin/**")
+                        .hasAuthority("ROLE_ADMIN")
 
-                                // 좋아요
-                                .requestMatchers(HttpMethod.GET, "/api/likes/**").permitAll()
-
-                                // 게시글 등록, 수정, 삭제는 USER와 ADMIN만 허용
-//                                .requestMatchers(HttpMethod.POST, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-//                                .requestMatchers(HttpMethod.PUT, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER") // 작성자 검증 필요
-//                                .requestMatchers(HttpMethod.DELETE, "/api/posts/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER") // 작성자 검증 필요
-
-                                // 관리자 전용 페이지 및 API
-                                .requestMatchers("/admin/**", "/admin.html", "/api/admin/**").hasAuthority("ROLE_ADMIN")
-
-                                .anyRequest().authenticated()
-
+                        // 나머지 요청은 로그인된 사용자만 접근 가능
+                        .anyRequest().authenticated()
                 )
 //                 접근 권한 예외 처리페이지 ( 인가되지 않은 사용자가 보호된 리소스에 접근할때 처리 )
                 .exceptionHandling(ex -> ex
-//                        .authenticationEntryPoint((request, response, authException) -> {
-//                            response.sendRedirect("/error.html");
-//                        })
                                 .accessDeniedHandler(accessDeniedHandler)
                 )
 
