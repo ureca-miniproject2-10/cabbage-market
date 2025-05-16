@@ -163,7 +163,7 @@ public class PostController {
             @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(name = "minPrice", required = false) Integer minPrice,
             @RequestParam(name = "maxPrice", required = false) Integer maxPrice,
-            @RequestParam(name = "state", required = false) PostState state  // ✅ enum 받기
+            @RequestParam(name = "state", required = false) PostState state  // enum 받기
     ) {
         String safeKeyword = (keyword != null) ? keyword : "";
         Page<PostResponse> postPage = postService.searchPostsByTitle(safeKeyword, pageNumber, pageSize, minPrice, maxPrice, state);
