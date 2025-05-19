@@ -116,7 +116,8 @@
 
 - ERD
 
-![스크린샷 2025-05-16 오전 10 22 19](https://github.com/user-attachments/assets/132ed29c-e900-4899-9ad1-1c3f451fa4fe)
+![image](https://github.com/user-attachments/assets/e7ca7a5c-f233-4951-8a59-84446823d224)
+
 
 
 
