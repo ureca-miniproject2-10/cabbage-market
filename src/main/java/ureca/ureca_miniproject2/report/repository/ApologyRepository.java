@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ApologyRepository extends JpaRepository<Apology, Integer> {
     Optional<Apology> findByPostPostId(Integer postId);
-    List<Apology> findByState(ApologyState apologyState);
+    List<Apology> findByState(String apologyState);
     // 특정 게시글 ID와 상태로 반성문 찾기
-    Optional<Apology> findByPostPostIdAndState(Integer postId, ApologyState state);
+    Optional<Apology> findByPostPostIdAndState(Integer postId, String state);
 }

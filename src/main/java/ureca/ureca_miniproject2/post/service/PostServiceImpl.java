@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ureca.ureca_miniproject2.commoncode.Code;
+import ureca.ureca_miniproject2.commoncode.CodeRepository;
 import ureca.ureca_miniproject2.like.repository.LikeRepository;
 import ureca.ureca_miniproject2.post.dto.PostCreateRequest;
 import ureca.ureca_miniproject2.post.dto.PostDetailResponse;
@@ -38,6 +40,7 @@ public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ReportRepository reportRepository;
+    private final CodeRepository codeRepository;
     private final LikeRepository likeRepository;
     private final CacheManager cacheManager;
 
@@ -56,7 +59,7 @@ public class PostServiceImpl implements PostService{
                 .viewCnt(0)
                 .reportCnt(0)
                 .createdAt(LocalDateTime.now())
-                .state(PostState.SALE)
+                .state("001")
                 .user(user)
                 .build();
 
@@ -71,7 +74,7 @@ public class PostServiceImpl implements PostService{
 
         // Pageable 객체 생성
         PageRequest pageable = PageRequest.of(correctedPageNumber, pageSize);
-        return postRepository.findAll(pageable)
+        return postRepository.findAllWithUser(pageable)
                 .map(PostResponse::from);
     }
 
@@ -144,7 +147,7 @@ public class PostServiceImpl implements PostService{
     // 제목으로 게시글 검색
     @Override
     public Page<PostResponse> searchPostsByTitle(String keyword, int pageNumber, int pageSize,
-                                                 Integer minPrice, Integer maxPrice, PostState state) {
+                                                 Integer minPrice, Integer maxPrice, String state) {
         int correctedPageNumber = Math.max(0, pageNumber);
         PageRequest pageable = PageRequest.of(correctedPageNumber, pageSize);
 
@@ -167,13 +170,10 @@ public class PostServiceImpl implements PostService{
 
 
 
-
-
-
     @Override
     @Transactional(readOnly = true)
     public List<PostResponse> findRestrictedPost() {
-        List<Post> posts = postRepository.findByState(PostState.RESTRICT);
+        List<Post> posts = postRepository.findByState("003");
         return posts.stream().map(PostResponse::from).toList();
     }
 }

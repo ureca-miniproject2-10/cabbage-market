@@ -24,7 +24,7 @@ public class ApologyResponse {
                 .postTitle(letter.getPost().getTitle())
                 .content(letter.getContent())
                 .createdAt(letter.getCreatedAt())
-                .state(letter.getState().getState())
+                .state(letter.getState())
                 .username(letter.getPost().getUser().getUsername())
                 .build();
     }

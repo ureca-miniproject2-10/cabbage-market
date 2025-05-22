@@ -28,8 +28,8 @@ public class Post {
 
     private LocalDateTime createdAt;
 
-    @Enumerated(value=EnumType.STRING)
-    private PostState state;
+//    @Enumerated(value=EnumType.STRING)
+    private String state;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
@@ -39,7 +39,7 @@ public class Post {
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
-    public void update(String title, String content, Integer price, String imageUrl, PostState state) {
+    public void update(String title, String content, Integer price, String imageUrl, String state) {
         this.title = title;
         this.content = content;
         this.price = price;
@@ -57,17 +57,21 @@ public class Post {
 
     public void incrementReport() {this.reportCnt++;}
 
-    public void restrict() {
-        this.state = PostState.RESTRICT;
+    public void setState(String state) {
+        this.state = state;
     }
 
-    public void unrestrict() {
-        this.state = PostState.SALE;
-    }
-
-    public boolean isRestricted() {
-        return this.state == PostState.RESTRICT;
-    }
+//    public void restrict() { // 001 , A01 001
+//        this.state == PostState.RESTRICT;
+//    }
+//
+//    public void unrestrict() {
+//        this.state = PostState.SALE;
+//    }
+//
+//    public boolean isRestricted() {
+//        return this.state == PostState.RESTRICT;
+//    }
 
     public boolean shouldBeRestricted() {
         return this.reportCnt >= 5;

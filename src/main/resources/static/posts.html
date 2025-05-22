@@ -139,7 +139,7 @@
                 <input
                         type="radio"
                         name="postState"
-                        value="SALE"
+                        value="001"
                         class="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
                 >
                 <span>판매중</span>
@@ -148,7 +148,7 @@
                 <input
                         type="radio"
                         name="postState"
-                        value="SOLD_OUT"
+                        value="002"
                         class="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
                 >
                 <span>거래종료</span>
@@ -477,17 +477,17 @@
     // 상태 라벨 변환
     function getPostStateInfo(state) {
         switch (state) {
-            case 'SALE':
+            case '001':
                 return {
                     label: '판매중',
                     colorClass: 'status-sale'
                 };
-            case 'SOLD_OUT':
+            case '002':
                 return {
                     label: '거래종료',
                     colorClass: 'status-sold'
                 };
-            case 'RESTRICT':
+            case '003':
                 return {
                     label: '거래제한',
                     colorClass: 'status-restrict'

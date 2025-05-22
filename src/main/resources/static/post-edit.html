@@ -274,8 +274,6 @@
 
                 <div class="form-group">
                     <select id="state" name="state" required>
-                        <option value="SALE">판매중</option>
-                        <option value="SOLD_OUT">판매완료</option>
                     </select>
                 </div>
 
@@ -621,6 +619,25 @@
             console.log('이미지 로드 실패, 기본 이미지로 대체');
         };
     });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        fetch("/api/common-code?groupCode=POST_STATE")
+            .then(res => res.json())
+            .then(data => {
+                const select = document.getElementById("state");
+                data.forEach(code => {
+                    const option = document.createElement("option");
+                    option.value = code.code;
+                    option.textContent = code.codeName;
+                    select.appendChild(option);
+                });
+            })
+            .catch(err => {
+                console.error("공통코드 불러오기 실패:", err);
+                alert("상태 목록을 불러오지 못했습니다.");
+            });
+    });
+
 </script>
 </body>
 </html>

@@ -53,7 +53,13 @@ public class ReportServiceImpl implements ReportService{
             reportRepository.save(report);
             post.incrementReport();
 
-            if(post.shouldBeRestricted()) post.restrict();
+            if(post.shouldBeRestricted()) post.setState("003");
+            // 001
+            // CodeRepository == POST_STATE
+            // AND code == 001
+            // return codeName
+
+
 
             postRepository.save(post);
         } else {

@@ -78,13 +78,13 @@ public class SecurityConfig {
 //                .csrf(csrf -> csrf
 //                        .disable())
                 // 쿠키 기반 csrf
-//                .csrf(csrf -> csrf
-//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                )
-                // 세션 기반 csrf
                 .csrf(csrf -> csrf
-                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
+                // 세션 기반 csrf
+//                .csrf(csrf -> csrf
+//                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+//                )
                 .authenticationManager(authenticationManager)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)  // 항상 세션 생성

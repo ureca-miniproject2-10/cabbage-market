@@ -7,5 +7,5 @@ public record PostUpdateRequest(
         String content,
         Integer price,
         String imageUrl,
-        PostState state
+        String state
 ) {}

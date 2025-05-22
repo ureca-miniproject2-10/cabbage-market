@@ -37,7 +37,7 @@ public interface PostService {
 
     // 키워드 & 가격 & 게시글 상태로 검색
     Page<PostResponse> searchPostsByTitle(String keyword, int pageNumber, int pageSize,
-                                                 Integer minPrice, Integer maxPrice, PostState state);
+                                                 Integer minPrice, Integer maxPrice, String state);
 
 
 }

@@ -3,6 +3,8 @@ package ureca.ureca_miniproject2.report.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ureca.ureca_miniproject2.commoncode.Code;
+import ureca.ureca_miniproject2.commoncode.CodeRepository;
 import ureca.ureca_miniproject2.post.entity.Apology;
 import ureca.ureca_miniproject2.post.entity.ApologyState;
 import ureca.ureca_miniproject2.post.entity.Post;
@@ -25,6 +27,7 @@ public class ApologyService {
     private final PostRepository postRepository;
     private final ApologyRepository apologyRepository;
     private final ReportRepository reportRepository;
+    private final CodeRepository codeRepository;
 
     @Transactional
     public void submitApology(Integer postId, String content, Integer userId) {
@@ -37,7 +40,7 @@ public class ApologyService {
         }
 
 
-        Optional<Apology> existingLetter = apologyRepository.findByPostPostIdAndState(post.getPostId(), ApologyState.PENDING);
+        Optional<Apology> existingLetter = apologyRepository.findByPostPostIdAndState(post.getPostId(), "001");
 
         if (existingLetter.isPresent()) {
             throw new IllegalStateException("이미 검토 중인 반성문이 있습니다. 관리자의 검토 결과를 기다려주세요.");
@@ -48,7 +51,7 @@ public class ApologyService {
                 .post(post)
                 .content(content)
                 .createdAt(LocalDateTime.now())
-                .state(ApologyState.PENDING)
+                .state("001")
                 .build();
 
         apologyRepository.save(apology);
@@ -59,15 +62,17 @@ public class ApologyService {
         Apology apology = apologyRepository.findById(apologyId)
                 .orElseThrow(() -> new NotFoundException(APOLOGY_NOT_FOUND.getMessage()));
 
+        Code code = codeRepository.findByCodeAndGroupCode(apology.getState(), "APOLOGY_STATE");
+
         if (apology.getReviewedAt() != null) {
-            throw new IllegalStateException("이미 처리된 반성문입니다. 현재 상태: " + apology.getState().getState());
+            throw new IllegalStateException("이미 처리된 반성문입니다. 현재 상태: " + code.getCodeName());
         }
 
         Post post = apology.getPost();
 
         if (isAccepted) {
             // 게시글 제한 해제 및 신고 관련 데이터 초기화
-            post.unrestrict();
+            post.setState("001");
             post.resetReportCount();
 
             // 게시글에 연관된 모든 신고 기록 삭제
@@ -85,7 +90,7 @@ public class ApologyService {
 
     @Transactional
     public List<ApologyResponse> getPendingApology() {
-        List<Apology> apologies = apologyRepository.findByState(ApologyState.PENDING);
+        List<Apology> apologies = apologyRepository.findByState("001");
         return apologies.stream().map(ApologyResponse::from).toList();
     }
 

@@ -46,7 +46,7 @@ public class PostController {
         PostDetailResponse post = postService.getPost(postId);
 
         // 제한된 게시글 처리
-        if (post.state() == PostState.RESTRICT) {
+        if (post.state().equals("003")) {
             // 작성자가 아닌 경우 접근 거부
             if (userDetails == null || !hasAdminRole(userDetails) && !post.userSimpleDto().userId().equals(userDetails.getUserId())) {
                 throw new ForbiddenException(ACCESS_DENY.getMessage());
@@ -101,7 +101,7 @@ public class PostController {
         }
 
         // 제한된 게시글은 수정 불가
-        if (post.state() == PostState.RESTRICT) {
+        if (post.state().equals("003")) {
             throw new ForbiddenException(UPDATE_DENY.getMessage());
         }
 
@@ -163,7 +163,7 @@ public class PostController {
             @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(name = "minPrice", required = false) Integer minPrice,
             @RequestParam(name = "maxPrice", required = false) Integer maxPrice,
-            @RequestParam(name = "state", required = false) PostState state  // enum 받기
+            @RequestParam(name = "state", required = false) String state  // enum 받기
     ) {
         String safeKeyword = (keyword != null) ? keyword : "";
         Page<PostResponse> postPage = postService.searchPostsByTitle(safeKeyword, pageNumber, pageSize, minPrice, maxPrice, state);

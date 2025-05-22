@@ -19,20 +19,19 @@ public class Apology {
     private LocalDateTime createdAt;
     private LocalDateTime reviewedAt;
 
-    @Enumerated(value = EnumType.STRING)
-    private ApologyState state;
+    private String state;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
     public void accept() {
-        this.state = ApologyState.ACCEPTED;
+        this.state = "002";
         this.reviewedAt = LocalDateTime.now();
     }
 
     public void reject() {
-        this.state = ApologyState.REJECTED;
+        this.state = "003";
         this.reviewedAt = LocalDateTime.now();
     }
 }

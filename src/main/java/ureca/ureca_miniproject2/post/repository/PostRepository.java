@@ -27,11 +27,11 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     );
 
     Page<Post> findByTitleContainingIgnoreCaseAndPriceBetweenAndState(
-            String keyword, int minPrice, int maxPrice, PostState state, Pageable pageable
+            String keyword, int minPrice, int maxPrice, String state, Pageable pageable
     );
 
 
-    List<Post> findByState(PostState postState);
+    List<Post> findByState(String postState);
 
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -45,5 +45,13 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Modifying
     @Query("UPDATE Post p SET p.likeCnt = p.likeCnt- 1 WHERE p.postId = :postId")
     void decrementLikeCount(@Param("postId") Integer postId);
+
+    @Query(
+            value = "SELECT p FROM Post p JOIN FETCH p.user",
+            countQuery = "SELECT COUNT(p) FROM Post p"
+    )
+    Page<Post> findAllWithUser(Pageable pageable);
+
+
 
 }

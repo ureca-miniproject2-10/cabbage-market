@@ -18,7 +18,7 @@ public record PostDetailResponse(
         int viewCnt,
         int reportCnt,
         LocalDateTime createdAt,
-        PostState state,
+        String state,
         UserSimpleDto userSimpleDto,
         List<CommentResponseDto> comments
 ) {

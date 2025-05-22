@@ -16,7 +16,7 @@ public record PostResponse(
         int viewCnt,
         int reportCnt,
         LocalDateTime createdAt,
-        PostState state,
+        String state,
         String name
 ) {
     public static PostResponse from(Post post) {
