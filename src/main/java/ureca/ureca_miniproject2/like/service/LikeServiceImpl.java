@@ -85,7 +85,7 @@ public class LikeServiceImpl implements LikeService {
     }
 
 //    @Override
-//    @Transactional
+//    @org.springframework.transaction.annotation.Transactional
 //    public boolean toggleLike(Integer userId, Integer postId) {
 //        LikeEntityKey likeKey = new LikeEntityKey(userId, postId);
 //

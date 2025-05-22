@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import ureca.ureca_miniproject2.config.handler.CustomAccessDeniedHandler;
 import ureca.ureca_miniproject2.config.handler.MyAuthenticationFailureHandler;
@@ -74,11 +75,16 @@ public class SecurityConfig {
         http
                 // CSRF 토큰을 쿠키에 저장 , 클라이언트가 이를 요청에 포함하도록함
                 // ( 상태 변경 메서드 : POST, PUT, PATCH, DELETE 요청에 대해 항상 필요 )
-                .csrf(csrf -> csrf
-                        .disable())
+//                .csrf(csrf -> csrf
+//                        .disable())
+                // 쿠키 기반 csrf
 //                .csrf(csrf -> csrf
 //                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                )
+                // 세션 기반 csrf
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+                )
                 .authenticationManager(authenticationManager)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)  // 항상 세션 생성
